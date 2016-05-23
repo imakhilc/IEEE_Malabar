@@ -1,0 +1,41 @@
+<resources>
+
+    <style name="AppTheme.TransBack">
+        <item name="android:windowIsTranslucent">true</item>
+        <!--item name="android:windowCloseOnTouchOutside">true</item-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="MenuTab" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MenuTabText</item>
+        <item name="tabSelectedTextColor">#fff</item>
+    </style>
+
+    <style name="MenuTabText" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#eee</item>
+    </style>
+
+    <style name="LoginTab" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/LoginTabText</item>
+        <item name="tabSelectedTextColor">#fff</item>
+    </style>
+
+    <style name="LoginTabText" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#eee</item>
+    </style>
+
+</resources>
