@@ -50,11 +50,13 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/post_author_layout"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginTop="10dp" />
 
                     <RelativeLayout
                         android:id="@+id/comment_form"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/post_text_layout"

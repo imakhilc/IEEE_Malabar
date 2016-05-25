@@ -126,9 +126,9 @@ public class MainContainer extends AppCompatActivity
         // Prevent endless loop by adding a unique action, don't restart if action is present
         if(action == null || !action.equals("Already created")) {
             Log.v("Example", "Force restart");
-            Intent intent = new Intent(this, MainContainer.class);
-            startActivity(intent);
-            finish();
+            //Intent intent = new Intent(this, MainContainer.class);
+            //startActivity(intent);
+            //finish();
         }
         else
             getIntent().setAction(null);

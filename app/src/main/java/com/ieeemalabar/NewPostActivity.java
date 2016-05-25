@@ -48,11 +48,11 @@ public class NewPostActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
+    StorageReference imageRef;
 
     private EditText mTitleField;
     private EditText mBodyField;
     private ImageView post_img;
-    StorageReference imageRef;
 
     private static final int RESULT_LOAD_IMAGE = 1;
     final int PIC_CROP = 2;

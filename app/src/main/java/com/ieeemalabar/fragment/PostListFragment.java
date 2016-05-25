@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.ieeemalabar.PostDetailActivity;
 import com.ieeemalabar.R;
 import com.ieeemalabar.models.Post;
@@ -47,6 +49,7 @@ public abstract class PostListFragment extends Fragment {
         mRecycler = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mRecycler.setNestedScrollingEnabled(false);
         mRecycler.setHasFixedSize(true);
+
 
         return rootView;
     }

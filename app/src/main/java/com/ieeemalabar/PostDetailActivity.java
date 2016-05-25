@@ -2,7 +2,11 @@ package com.ieeemalabar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,16 +19,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.ieeemalabar.models.User;
 import com.ieeemalabar.models.Comment;
 import com.ieeemalabar.models.Post;
@@ -51,6 +60,12 @@ public class PostDetailActivity extends BaseActivity {
     private EditText mCommentField;
     private RecyclerView mCommentsRecycler;
 
+    private ImageView mFeatured;
+
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageRef;
+    StorageReference imageRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,17 +77,27 @@ public class PostDetailActivity extends BaseActivity {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setElevation(0);
+        }
+
         // Initialize Database
         mPostReference = FirebaseDatabase.getInstance().getReference()
                 .child("posts").child(mPostKey);
         mCommentsReference = FirebaseDatabase.getInstance().getReference()
                 .child("post-comments").child(mPostKey);
 
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
+
+        imageRef = mStorageRef.child("featured/" + mPostKey+".jpg");
+
         // Initialize Views
         mAuthorView = (TextView) findViewById(R.id.post_author);
         mDateView = (TextView) findViewById(R.id.post_date);
         mTitleView = (TextView) findViewById(R.id.post_title);
         mBodyView = (TextView) findViewById(R.id.post_body);
+        mFeatured = (ImageView) findViewById(R.id.feature);
         mCommentField = (EditText) findViewById(R.id.field_comment_text);
         mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
         mCommentsRecycler.setNestedScrollingEnabled(false);
@@ -158,6 +183,21 @@ public class PostDetailActivity extends BaseActivity {
                 mTitleView.setText(post.title);
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]
+                final long ONE_MEGABYTE = 1024 * 1024;
+                imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        //Toast.makeText(PostDetailActivity.this, "Invalid Name", Toast.LENGTH_SHORT).show()
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mFeatured.setImageBitmap(bmp);;
+                        mFeatured.setVisibility(View.VISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
             }
 
             @Override
