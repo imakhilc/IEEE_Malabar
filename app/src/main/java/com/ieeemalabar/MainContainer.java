@@ -130,7 +130,6 @@ public class MainContainer extends AppCompatActivity
             startActivity(intent);
             finish();
         }
-        // Remove the unique action so the next time onResume is called it will restart
         else
             getIntent().setAction(null);
 

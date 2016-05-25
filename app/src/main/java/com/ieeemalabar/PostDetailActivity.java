@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,7 +32,7 @@ import com.ieeemalabar.models.Post;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
+public class PostDetailActivity extends BaseActivity {
 
     private static final String TAG = "PostDetailActivity";
 
@@ -46,7 +48,6 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private TextView mTitleView;
     private TextView mBodyView;
     private EditText mCommentField;
-    private ImageButton mCommentButton;
     private RecyclerView mCommentsRecycler;
 
     @Override
@@ -71,7 +72,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mTitleView = (TextView) findViewById(R.id.post_title);
         mBodyView = (TextView) findViewById(R.id.post_body);
         mCommentField = (EditText) findViewById(R.id.field_comment_text);
-        mCommentButton = (ImageButton) findViewById(R.id.button_post_comment);
+        //mCommentButton = (ImageButton) findViewById(R.id.button_post_comment);
         mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
         mCommentsRecycler.setNestedScrollingEnabled(false);
 
@@ -101,7 +102,40 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-        mCommentButton.setOnClickListener(this);
+        mCommentField.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(s.toString().trim().length()==0){
+                    findViewById(R.id.sybmit_comment).setVisibility(View.GONE);
+                } else {
+                    findViewById(R.id.sybmit_comment).setVisibility(View.VISIBLE);
+            }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        findViewById(R.id.sybmit_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = mCommentField.getText().toString().trim();
+                if(commentText.length() > 0)
+                    postComment();
+            }
+        });
+
         mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
 
     }
@@ -152,17 +186,6 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mAdapter.cleanupListener();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_post_comment:
-                String commentText = mCommentField.getText().toString().trim();
-                if(commentText.length()>0)
-                    postComment();
-                break;
-        }
-    }
-
     private void postComment() {
         final String uid = getUid();
         FirebaseDatabase.getInstance().getReference().child("users").child(uid)
@@ -199,7 +222,6 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
         public CommentViewHolder(View itemView) {
             super(itemView);
-
             authorView = (TextView) itemView.findViewById(R.id.comment_author);
             bodyView = (TextView) itemView.findViewById(R.id.comment_body);
         }

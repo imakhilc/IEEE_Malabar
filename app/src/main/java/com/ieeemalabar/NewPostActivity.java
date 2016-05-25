@@ -1,11 +1,16 @@
 package com.ieeemalabar;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +39,10 @@ public class NewPostActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setElevation(0);
+        }
+        
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mTitleField = (EditText) findViewById(R.id.field_title);
@@ -50,6 +59,8 @@ public class NewPostActivity extends BaseActivity {
     private void submitPost() {
         final String title = mTitleField.getText().toString().trim();
         final String body = mBodyField.getText().toString().trim();
+        TextView pic_name = (TextView) findViewById(R.id.pic_name);
+        Button img_buttom = (Button) findViewById(R.id.img_buttom);
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
@@ -62,7 +73,6 @@ public class NewPostActivity extends BaseActivity {
             mBodyField.setError(REQUIRED);
             return;
         }
-
         // [START single_value_read]
         final String userId = getUid();
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
@@ -83,11 +93,6 @@ public class NewPostActivity extends BaseActivity {
                             // Write new post
                             writeNewPost(userId, user.name, title, body);
                         }
-
-                        // Finish this Activity, back to the stream
-                        startActivity(new Intent(getApplicationContext(), MainContainer.class));
-                        finish();
-                        // [END_EXCLUDE]
                     }
 
                     @Override
@@ -111,6 +116,10 @@ public class NewPostActivity extends BaseActivity {
         childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
 
         mDatabase.updateChildren(childUpdates);
+
+        // Finish this Activity, back to the stream
+        //startActivity(new Intent(getApplicationContext(), MainContainer.class));
+        finish();
     }
     // [END write_fan_out]
     @Override

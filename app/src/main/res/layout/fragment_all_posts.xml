@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         tools:context=".MainActivity">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:background="#f3f3f3"
+        <FrameLayout
             android:padding="5dp"
-            android:id="@+id/messages_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/item_post" />
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
 
-    </FrameLayout>
-</ScrollView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/messages_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:clipToPadding="false"
+                android:scrollbars="vertical"
+                tools:listitem="@layout/item_post" />
+
+        </FrameLayout>
+    </ScrollView>
+</LinearLayout>

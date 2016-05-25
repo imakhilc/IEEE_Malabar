@@ -13,13 +13,31 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_account_square" />
 
-    <TextView
-        android:id="@+id/post_author"
-        style="@style/Base.TextAppearance.AppCompat.Small"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:gravity="center_vertical"
-        tools:text="someauthor@email.com" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/post_author"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            tools:text="someauthor@email.com" />
+
+        <TextView
+            android:id="@+id/pos_date"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:textSize="10dp"
+            tools:text="25-May-2016" />
+    </RelativeLayout>
 
 </LinearLayout>

@@ -85,7 +85,7 @@ public class MainActivity extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), NewPostActivity.class));
-                getActivity().finish();
+                //getActivity().finish();
             }
         });
     }

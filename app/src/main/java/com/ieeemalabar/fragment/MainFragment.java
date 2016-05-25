@@ -54,14 +54,6 @@ public class MainFragment extends Fragment {
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_notification_dark);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_event_dark);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() != null) {
-            //onAuthSuccess(mAuth.getCurrentUser());
-        } else {
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            getActivity().finish();
-        }
-
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {

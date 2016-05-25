@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,36 +28,26 @@ public abstract class PostListFragment extends Fragment {
 
     private static final String TAG = "PostListFragment";
 
-    // [START define_database_reference]
     private DatabaseReference mDatabase;
-    // [END define_database_reference]
 
     private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
-    Boolean loading = true;
-    ProgressBar progress_bar;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-
-    public PostListFragment() {
-    }
+    public PostListFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView (LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_all_posts, container, false);
 
-        // [START create_database_reference]
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        // [END create_database_reference]
 
         mRecycler = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mRecycler.setNestedScrollingEnabled(false);
         mRecycler.setHasFixedSize(true);
 
-        progress_bar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         return rootView;
     }
 
@@ -115,30 +104,9 @@ public abstract class PostListFragment extends Fragment {
             }
         };
         mRecycler.setAdapter(mAdapter);
-
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) //check for scroll down
-                {
-                    visibleItemCount = mManager.getChildCount();
-                    totalItemCount = mManager.getItemCount();
-                    pastVisiblesItems = mManager.findFirstVisibleItemPosition();
-
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
-                            Log.v("...", "Last Item Wow !");
-                            //Do pagination.. i.e. fetch new data
-                            progress_bar.setVisibility(View.GONE);
-                        }
-                    }
-                }
-            }
-        });
     }
 
-    // [START post_stars_transaction]
+    // START post_stars
     private void onStarClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
@@ -149,16 +117,13 @@ public abstract class PostListFragment extends Fragment {
                 }
 
                 if (p.stars.containsKey(getUid())) {
-                    // Unstar the post and remove self from stars
                     p.starCount = p.starCount - 1;
                     p.stars.remove(getUid());
                 } else {
-                    // Star the post and add self to stars
                     p.starCount = p.starCount + 1;
                     p.stars.put(getUid(), true);
                 }
 
-                // Set value and report transaction success
                 mutableData.setValue(p);
                 return Transaction.success(mutableData);
             }
@@ -171,7 +136,7 @@ public abstract class PostListFragment extends Fragment {
             }
         });
     }
-    // [END post_stars_transaction]
+    // END post_stars
 
     @Override
     public void onDestroy() {
