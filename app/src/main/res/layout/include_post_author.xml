@@ -25,11 +25,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="2dp"
             tools:text="someauthor@email.com" />
 
         <TextView
-            android:id="@+id/pos_date"
+            android:id="@+id/post_date"
             style="@style/Base.TextAppearance.AppCompat.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

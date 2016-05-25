@@ -45,6 +45,7 @@ public class PostDetailActivity extends BaseActivity {
     private CommentAdapter mAdapter;
 
     private TextView mAuthorView;
+    private TextView mDateView;
     private TextView mTitleView;
     private TextView mBodyView;
     private EditText mCommentField;
@@ -69,10 +70,10 @@ public class PostDetailActivity extends BaseActivity {
 
         // Initialize Views
         mAuthorView = (TextView) findViewById(R.id.post_author);
+        mDateView = (TextView) findViewById(R.id.post_date);
         mTitleView = (TextView) findViewById(R.id.post_title);
         mBodyView = (TextView) findViewById(R.id.post_body);
         mCommentField = (EditText) findViewById(R.id.field_comment_text);
-        //mCommentButton = (ImageButton) findViewById(R.id.button_post_comment);
         mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
         mCommentsRecycler.setNestedScrollingEnabled(false);
 
@@ -153,6 +154,7 @@ public class PostDetailActivity extends BaseActivity {
                 Post post = dataSnapshot.getValue(Post.class);
                 // [START_EXCLUDE]
                 mAuthorView.setText(post.author);
+                mDateView.setText(post.date);
                 mTitleView.setText(post.title);
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]

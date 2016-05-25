@@ -14,6 +14,7 @@ public class Post {
     public String author;
     public String title;
     public String body;
+    public String date;
     public int starCount = 0;
     public Map<String, Boolean> stars = new HashMap<>();
 
@@ -28,6 +29,14 @@ public class Post {
         this.body = body;
     }
 
+    public Post(String uid, String author, String title, String body, String date) {
+        this.uid = uid;
+        this.author = author;
+        this.title = title;
+        this.body = body;
+        this.date = date;
+    }
+
     // [START post_to_map]
     @Exclude
     public Map<String, Object> toMap() {
@@ -36,6 +45,7 @@ public class Post {
         result.put("author", author);
         result.put("title", title);
         result.put("body", body);
+        result.put("date", date);
         result.put("starCount", starCount);
         result.put("stars", stars);
 
