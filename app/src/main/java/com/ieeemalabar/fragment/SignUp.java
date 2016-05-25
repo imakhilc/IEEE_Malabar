@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.ieeemalabar.MainActivity;
+import com.ieeemalabar.MainContainer;
 import com.ieeemalabar.R;
 
 /**
@@ -164,7 +165,7 @@ public class SignUp extends Fragment {
         writeNewUser(user.getUid(), username, name, college, ieee);
 
         // Go to MainActivity
-        startActivity(new Intent(getActivity(), MainActivity.class));
+        startActivity(new Intent(getActivity(), MainContainer.class));
         getActivity().finish();
     }
 

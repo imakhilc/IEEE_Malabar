@@ -11,13 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".NewPostActivity" />
-        <activity
-            android:name=".LoginActivity"
-            android:windowSoftInputMode="stateVisible|adjustPan|stateHidden">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +24,19 @@
         <activity android:name=".PostDetailActivity" />
         <activity
             android:name=".Forgot"
-            android:theme="@style/AppTheme.TransBack"/>
+            android:theme="@style/AppTheme.TransBack" />
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateVisible|adjustPan|stateHidden" />
+        <activity
+            android:name=".NewPostActivity" />
+        <activity
+            android:name=".MainContainer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

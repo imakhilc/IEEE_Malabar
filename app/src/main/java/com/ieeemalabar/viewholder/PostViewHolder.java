@@ -2,6 +2,7 @@ package com.ieeemalabar.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 
     public TextView titleView;
     public TextView authorView;
-    public ImageView starView;
+    public ImageButton starView;
     public TextView numStarsView;
     public TextView bodyView;
 
@@ -21,7 +22,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
 
         titleView = (TextView) itemView.findViewById(R.id.post_title);
         authorView = (TextView) itemView.findViewById(R.id.post_author);
-        starView = (ImageView) itemView.findViewById(R.id.star);
+        starView = (ImageButton) itemView.findViewById(R.id.star);
         numStarsView = (TextView) itemView.findViewById(R.id.post_num_stars);
         bodyView = (TextView) itemView.findViewById(R.id.post_body);
     }

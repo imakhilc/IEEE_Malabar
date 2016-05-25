@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ieeemalabar.Forgot;
 import com.ieeemalabar.MainActivity;
+import com.ieeemalabar.MainContainer;
 import com.ieeemalabar.R;
 
 import java.util.regex.Matcher;
@@ -150,7 +151,7 @@ public class SignIn extends Fragment {
 
                         if (task.isSuccessful()) {
                             displayMessage("Login success");
-                            startActivity(new Intent(getActivity(), MainActivity.class));
+                            startActivity(new Intent(getActivity(), MainContainer.class));
                             getActivity().finish();
                         } else {
                             displayMessage("Login Failed");

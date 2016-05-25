@@ -1,6 +1,7 @@
 package com.ieeemalabar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -155,7 +156,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_post_comment:
-                if(mCommentField.length()>0)
+                String commentText = mCommentField.getText().toString().trim();
+                if(commentText.length()>0)
                     postComment();
                 break;
         }
@@ -169,14 +171,15 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user information
                         User user = dataSnapshot.getValue(User.class);
-                        String authorName = user.username;
+                        String authorName = user.name;
 
                         // Create new comment object
-                        String commentText = mCommentField.getText().toString();
+                        String commentText = mCommentField.getText().toString().trim();
                         Comment comment = new Comment(uid, authorName, commentText);
 
                         // Push the comment, it will appear in the list
-                        mCommentsReference.push().setValue(comment);
+                        if(commentText.trim().length()>0)
+                            mCommentsReference.push().setValue(comment);
 
                         // Clear the field
                         mCommentField.setText(null);
@@ -326,6 +329,11 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
+    }
 
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(getApplicationContext(), MainContainer.class));
+        finish();
     }
 }

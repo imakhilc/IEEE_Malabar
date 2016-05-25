@@ -1,5 +1,6 @@
 package com.ieeemalabar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,8 +48,8 @@ public class NewPostActivity extends BaseActivity {
     }
 
     private void submitPost() {
-        final String title = mTitleField.getText().toString();
-        final String body = mBodyField.getText().toString();
+        final String title = mTitleField.getText().toString().trim();
+        final String body = mBodyField.getText().toString().trim();
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
@@ -80,10 +81,11 @@ public class NewPostActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             // Write new post
-                            writeNewPost(userId, user.username, title, body);
+                            writeNewPost(userId, user.name, title, body);
                         }
 
                         // Finish this Activity, back to the stream
+                        startActivity(new Intent(getApplicationContext(), MainContainer.class));
                         finish();
                         // [END_EXCLUDE]
                     }
@@ -111,4 +113,9 @@ public class NewPostActivity extends BaseActivity {
         mDatabase.updateChildren(childUpdates);
     }
     // [END write_fan_out]
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(getApplicationContext(), MainContainer.class));
+        finish();
+    }
 }
