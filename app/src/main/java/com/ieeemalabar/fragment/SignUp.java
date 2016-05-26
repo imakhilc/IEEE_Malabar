@@ -30,16 +30,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ieeemalabar.MainActivity;
-import com.ieeemalabar.MainContainer;
+import com.ieeemalabar.ActivityMain;
 import com.ieeemalabar.R;
 
 /**
+ * Created by AKHIL on 26-Apr-16.
  * Created by AKHIL on 26-Apr-16.
  */
 public class SignUp extends Fragment {
@@ -165,7 +163,7 @@ public class SignUp extends Fragment {
         writeNewUser(user.getUid(), username, name, college, ieee);
 
         // Go to MainActivity
-        startActivity(new Intent(getActivity(), MainContainer.class));
+        startActivity(new Intent(getActivity(), ActivityMain.class));
         getActivity().finish();
     }
 

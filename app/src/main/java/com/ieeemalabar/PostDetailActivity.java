@@ -397,7 +397,7 @@ public class PostDetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed(){
-        startActivity(new Intent(getApplicationContext(), MainContainer.class));
+        //startActivity(new Intent(getApplicationContext(), MainContainer.class));
         finish();
     }
 }

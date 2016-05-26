@@ -1,53 +1,42 @@
-package com.ieeemalabar.fragment;
-
+package com.ieeemalabar;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.ieeemalabar.LoginActivity;
-import com.ieeemalabar.MainActivity;
-import com.ieeemalabar.R;
+import com.ieeemalabar.fragment.SignIn;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class MainFragment extends Fragment {
+public class ActivityMain extends AppCompatActivity {
 
     TabLayout tabLayout;
     ViewPager viewPager;
 
-    public MainFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_activity_main);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getActivity().setTitle("Events");
-        viewPager = (ViewPager) getView().findViewById(R.id.viewPager);
-        setRetainInstance(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setElevation(0);
+        }
+
+        setTitle("Events");
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        //setRetainInstance(true);
         viewPager.setOffscreenPageLimit(4);
-        viewPager.setAdapter(new CustomAdapter(getFragmentManager(), getActivity()));
+        viewPager.setAdapter(new CustomAdapter(getSupportFragmentManager(), this));
 
-        tabLayout = (TabLayout) getView().findViewById(R.id.tabLayout);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_event_light);
@@ -60,15 +49,15 @@ public class MainFragment extends Fragment {
                 viewPager.setCurrentItem(tab.getPosition());
                 if(tab.getPosition()==0) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
-                    getActivity().setTitle("Events");
+                    setTitle("Events");
                 }
                 else if(tab.getPosition()==1) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_notification_light);
-                    getActivity().setTitle("Notifications");
+                    setTitle("Notifications");
                 }
                 else if(tab.getPosition()==2) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
-                    getActivity().setTitle("Events");
+                    setTitle("Events");
                 }
             }
 
@@ -126,6 +115,25 @@ public class MainFragment extends Fragment {
         @Override
         public CharSequence getPageTitle(int position) {
             return fragments[position];
+        }
+    }
+
+    @Override
+     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

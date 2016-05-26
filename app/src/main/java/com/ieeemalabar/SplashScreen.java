@@ -16,7 +16,7 @@ public class SplashScreen extends Activity {
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MainContainer.class));
+            startActivity(new Intent(this, ActivityMain.class));
             finish();
         } else {
             startActivity(new Intent(this, LoginActivity.class));

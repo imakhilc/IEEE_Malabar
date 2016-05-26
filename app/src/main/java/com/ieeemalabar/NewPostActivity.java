@@ -1,5 +1,6 @@
 package com.ieeemalabar;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,6 +55,8 @@ public class NewPostActivity extends BaseActivity {
     private EditText mTitleField;
     private EditText mBodyField;
     private ImageView post_img;
+    Activity context;
+    Boolean image_selected=false;
 
     private static final int RESULT_LOAD_IMAGE = 1;
     final int PIC_CROP = 2;
@@ -62,6 +66,7 @@ public class NewPostActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+        context=this;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -79,16 +84,8 @@ public class NewPostActivity extends BaseActivity {
         mTitleField = (EditText) findViewById(R.id.field_title);
         mBodyField = (EditText) findViewById(R.id.field_body);
         post_img = (ImageView) findViewById(R.id.post_img);
-
-        findViewById(R.id.fab_submit_post).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitPost();
-            }
-        });
-
         Button select = (Button) findViewById(R.id.img_buttom);
-        assert select != null;
+
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,15 +94,29 @@ public class NewPostActivity extends BaseActivity {
                 //Toast.makeText(NewPostActivity.this, images.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        findViewById(R.id.fab_submit_post).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitPost();
+            }
+        });
     }
 
     private void submitPost() {
         final String title = mTitleField.getText().toString().trim();
         final String body = mBodyField.getText().toString().trim();
+        TextView pic_name = (TextView) findViewById(R.id.pic_name);
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
             mTitleField.setError(REQUIRED);
+            return;
+        }
+
+        //Image is required
+        if (!image_selected) {
+            pic_name.setError(REQUIRED);
             return;
         }
 
@@ -114,6 +125,9 @@ public class NewPostActivity extends BaseActivity {
             mBodyField.setError(REQUIRED);
             return;
         }
+
+        //hide keyboard
+        hideSoftKeyboard(this);
 
         // [START single_value_read]
         final String userId = getUid();
@@ -133,9 +147,6 @@ public class NewPostActivity extends BaseActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
 
-                            pd.setMessage("Saving Report...");
-                            pd.show();
-
                             // Write new post
                             Calendar c = Calendar.getInstance();
                             System.out.println("Current time => " + c.getTime());
@@ -146,7 +157,6 @@ public class NewPostActivity extends BaseActivity {
 
                             // Finish this Activity, back to the stream
                             //startActivity(new Intent(getApplicationContext(), MainContainer.class));
-                            pd.hide();
                             finish();
                         }
                     }
@@ -163,6 +173,10 @@ public class NewPostActivity extends BaseActivity {
     private void writeNewPost(String userId, String username, String title, String body, String date) {
         // Create new post at /user-posts/$userid/$postid and at
         // /posts/$postid simultaneously
+
+        pd.setMessage("Saving Report...");
+        pd.show();
+
         String key = mDatabase.child("posts").push().getKey();
         Post post = new Post(userId, username, title, body, date);
         Map<String, Object> postValues = post.toMap();
@@ -177,7 +191,7 @@ public class NewPostActivity extends BaseActivity {
         post_img.setDrawingCacheEnabled(true);
         post_img.buildDrawingCache();
         Bitmap bitmap = post_img.getDrawingCache();
-        bitmap = getResizedBitmap(bitmap,550);
+        bitmap = getResizedBitmap(bitmap,750);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
@@ -195,12 +209,14 @@ public class NewPostActivity extends BaseActivity {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
             }
         });
+
+        pd.hide();
     }
 
     // [END write_fan_out]
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(getApplicationContext(), MainContainer.class));
+        //startActivity(new Intent(getApplicationContext(), MainContainer.class));
         finish();
     }
 
@@ -208,11 +224,33 @@ public class NewPostActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            image_selected = true;
             selectedImage = data.getData();
             post_img.setImageURI(selectedImage);
             post_img.setVisibility(View.VISIBLE);
             TextView pic_name = (TextView) findViewById(R.id.pic_name);
-            pic_name.setText(selectedImage.toString());
+            pic_name.setError(null);
+            String fileName;
+
+            String scheme = selectedImage.getScheme();
+            if (scheme.equals("file")) {
+                fileName = selectedImage.getLastPathSegment();
+                pic_name.setText(fileName);
+            }
+            else if (scheme.equals("content")) {
+                String[] proj = { MediaStore.Images.Media.TITLE };
+                Cursor cursor = context.getContentResolver().query(selectedImage, proj, null, null, null);
+                if (cursor != null && cursor.getCount() != 0) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+                    cursor.moveToFirst();
+                    fileName = cursor.getString(columnIndex);
+                    pic_name.setText(fileName);
+                }
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+
             //performCrop(selectedImage);
         }
         /*if (requestCode == PIC_CROP && data != null) {
@@ -267,5 +305,10 @@ public class NewPostActivity extends BaseActivity {
         }
 
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 }

@@ -15,6 +15,8 @@
     <string name="sign_in">Sign In</string>
 
     <string name="select">Select Your College</string>
+    <string name="select_cat">Select Catagory</string>
+
     <string-array name="colleges">
         <item>College of Engineering Trikaripur</item>
         <item>2nd clg</item>
@@ -32,6 +34,12 @@
         <item>7th clg</item>
         <item>8th clg</item>
         <item>7th clg</item>
+    </string-array>
+
+    <string-array name="events">
+        <item>All Events</item>
+        <item>My Student Branch</item>
+        <item>Malabar Hub</item>
     </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,12 +23,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
-
-                <LinearLayout
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:layout_width="0px"
-                    android:layout_height="0px"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -43,6 +43,7 @@
                         android:textSize="18sp" />
 
                     <ImageView
+                        android:visibility="gone"
                         android:layout_marginTop="10dp"
                         android:id="@+id/post_img"
                         android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                         android:weightSum="4">
 
                         <Button
+                            android:focusableInTouchMode="false"
                             android:id="@+id/img_buttom"
                             style="@android:style/Widget.EditText"
                             android:layout_width="match_parent"
@@ -71,6 +73,7 @@
                             android:textSize="16sp" />
 
                         <TextView
+                            android:paddingRight="16dp"
                             android:id="@+id/pic_name"
                             android:textColor="@color/secondary_text"
                             style="@android:style/Widget.EditText"
