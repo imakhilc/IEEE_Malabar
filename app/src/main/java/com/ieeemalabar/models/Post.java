@@ -14,6 +14,7 @@ public class Post {
     public String author;
     public String title;
     public String body;
+    public String college;
     public String date;
     public int starCount = 0;
     public Map<String, Boolean> stars = new HashMap<>();
@@ -21,20 +22,13 @@ public class Post {
     public Post() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
-
-    public Post(String uid, String author, String title, String body) {
-        this.uid = uid;
-        this.author = author;
-        this.title = title;
-        this.body = body;
-    }
-
-    public Post(String uid, String author, String title, String body, String date) {
+    public Post(String uid, String author, String title, String body, String date, String college) {
         this.uid = uid;
         this.author = author;
         this.title = title;
         this.body = body;
         this.date = date;
+        this.college = college;
     }
 
     // [START post_to_map]
@@ -46,6 +40,7 @@ public class Post {
         result.put("title", title);
         result.put("body", body);
         result.put("date", date);
+        result.put("college", college);
         result.put("starCount", starCount);
         result.put("stars", stars);
 

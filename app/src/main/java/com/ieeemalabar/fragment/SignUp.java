@@ -3,6 +3,7 @@ package com.ieeemalabar.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -35,6 +37,7 @@ import java.util.regex.Pattern;
 
 import com.ieeemalabar.ActivityMain;
 import com.ieeemalabar.R;
+import com.ieeemalabar.models.User;
 
 /**
  * Created by AKHIL on 26-Apr-16.
@@ -46,17 +49,18 @@ public class SignUp extends Fragment {
     private Toast mToastText;
     Spinner mCollegeField;
     Button mSignUpButton;
-    EditText mNameField,mEmailField,mIeeeField,mPasswordField;
+    EditText mNameField, mEmailField, mIeeeField, mPasswordField;
     ProgressDialog pd;
     CheckBox check;
-    Boolean tick = true;
+    Boolean tick = true, college_op = false;
     private DatabaseReference mDatabase;
     private static final String TAG = "SignUp";
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.signup,container,false);
+        return inflater.inflate(R.layout.signup, container, false);
     }
 
     @Override
@@ -113,6 +117,26 @@ public class SignUp extends Fragment {
                 }
             }
         });
+
+        mCollegeField.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code here
+                if (position == 0)
+                    college_op = false;
+                else {
+                    EditText spinner_e = (EditText) getActivity().findViewById(R.id.spinner_e);
+                    spinner_e.setError(null);
+                    college_op = true;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
     }
 
     private void displayMessage(final String message) {
@@ -121,7 +145,7 @@ public class SignUp extends Fragment {
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
@@ -159,6 +183,11 @@ public class SignUp extends Fragment {
         String college = mCollegeField.getSelectedItem().toString();
         String ieee = mIeeeField.getText().toString();
 
+        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("college", college);
+        editor.commit();
+
         // Write new user
         writeNewUser(user.getUid(), username, name, college, ieee);
 
@@ -177,28 +206,38 @@ public class SignUp extends Fragment {
 
     private boolean validateForm() {
         boolean result = true;
-        if (TextUtils.isEmpty(mEmailField.getText().toString())||!isEmailValid(mEmailField.getText().toString())) {
+
+        if (!college_op) {
+            EditText spinner_e = (EditText) getActivity().findViewById(R.id.spinner_e);
+            spinner_e.setError("Select Your College");
+            result = false;
+        } else {
+            EditText spinner_e = (EditText) getActivity().findViewById(R.id.spinner_e);
+            spinner_e.setError(null);
+        }
+
+        if (TextUtils.isEmpty(mEmailField.getText().toString()) || !isEmailValid(mEmailField.getText().toString())) {
             mEmailField.setError("Invalid email id");
             result = false;
         } else {
             mEmailField.setError(null);
         }
 
-        if (mPasswordField.getText().toString().length()<6) {
+        if (mPasswordField.getText().toString().length() < 6) {
             mPasswordField.setError("Password should contain at least 6 characters");
             result = false;
         } else {
             mPasswordField.setError(null);
         }
 
-        if (mNameField.getText().toString().length()<4) {
+        if (mNameField.getText().toString().length() < 4) {
             mNameField.setError("Enter your full name");
             result = false;
         } else {
             mNameField.setError(null);
         }
 
-        if (mIeeeField.getText().toString().length()!=8) {
+        if (mIeeeField.getText().toString().length() != 8) {
             mIeeeField.setError("Invalid ID");
             result = false;
         } else {
@@ -209,7 +248,7 @@ public class SignUp extends Fragment {
     }
 
     private void writeNewUser(String userId, String username, String name, String college, String ieee) {
-        User user = new User(username,name,college,ieee);
+        User user = new User(username, name, college, ieee);
         mDatabase.child("users").child(userId).setValue(user);
     }
 
@@ -227,7 +266,7 @@ public class SignUp extends Fragment {
         return isValid;
     }
 
-    @IgnoreExtraProperties
+    /*@IgnoreExtraProperties
     public class User {
 
         public String username;
@@ -250,5 +289,5 @@ public class SignUp extends Fragment {
             this.username = username;
         }
 
-    }
+    }*/
 }

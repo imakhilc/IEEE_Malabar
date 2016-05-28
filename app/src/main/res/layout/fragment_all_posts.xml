@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:background="#eee"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        tools:context=".MainActivity">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:padding="5dp"
+        <!--ProgressBar
+            android:id="@+id/p_b"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true" /-->
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fillViewport="true"
             tools:context=".MainActivity">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/messages_list"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:clipToPadding="false"
-                android:scrollbars="vertical"
-                tools:listitem="@layout/item_post" />
+                android:padding="5dp"
+                tools:context=".MainActivity">
 
-        </FrameLayout>
-    </ScrollView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/messages_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    tools:listitem="@layout/item_post" />
+
+            </FrameLayout>
+        </ScrollView>
+
+    </RelativeLayout>
 </LinearLayout>

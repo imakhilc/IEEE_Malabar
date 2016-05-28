@@ -11,4 +11,8 @@
 
     <color name="etcolor">#26ffffff</color>
     <color name="iccolor">#40ffffff</color>
+
+
+    <color name="share">#fff</color>
+    <color name="share_d">#eee</color>
 </resources>

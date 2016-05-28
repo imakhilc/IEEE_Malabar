@@ -1,6 +1,7 @@
 package com.ieeemalabar.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +24,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ieeemalabar.NewPostActivity;
 import com.ieeemalabar.PostDetailActivity;
 import com.ieeemalabar.R;
 import com.ieeemalabar.models.Post;
@@ -35,6 +39,7 @@ public abstract class PostListFragment extends Fragment {
     private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
+    public static String subPostKey;
 
     public PostListFragment() {}
 
@@ -49,7 +54,6 @@ public abstract class PostListFragment extends Fragment {
         mRecycler = (RecyclerView) rootView.findViewById(R.id.messages_list);
         mRecycler.setNestedScrollingEnabled(false);
         mRecycler.setHasFixedSize(true);
-
 
         return rootView;
     }
@@ -74,6 +78,8 @@ public abstract class PostListFragment extends Fragment {
 
                 // Set click listener for the whole post view
                 final String postKey = postRef.getKey();
+                subPostKey = postRef.getKey();
+
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -96,10 +102,13 @@ public abstract class PostListFragment extends Fragment {
                     @Override
                     public void onClick(View starView) {
                         // Neeed to write to both places the post is stored
-                        DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
-                        DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
+                        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                        String college = settings.getString("college", "");
 
-                        // Run two transactions
+                        DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
+                        DatabaseReference userPostRef = mDatabase.child("user-posts").child(college).child(postRef.getKey());
+
+                        //Run two transactions
                         onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
                     }

@@ -36,6 +36,7 @@
                         android:layout_height="45dp"
                         android:background="#eee"
                         android:hint="Title"
+                        android:textStyle="bold"
                         android:maxLines="1"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
@@ -90,12 +91,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="#eee"
-                        android:paddingBottom="20dp"
-                        android:paddingTop="20dp">
+                        android:layout_marginTop="8dp"
+                        android:background="#eee">
 
                         <EditText
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
                             android:id="@+id/field_body"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -103,7 +104,7 @@
                             android:background="#eee"
                             android:hint="Write your report..."
                             android:inputType="textMultiLine"
-                            android:maxLines="25"
+                            android:maxLines="100"
                             android:paddingLeft="16dp"
                             android:paddingRight="16dp"
                             android:scrollHorizontally="false"

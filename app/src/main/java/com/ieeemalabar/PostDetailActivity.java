@@ -2,15 +2,19 @@ package com.ieeemalabar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +44,10 @@ import com.ieeemalabar.models.User;
 import com.ieeemalabar.models.Comment;
 import com.ieeemalabar.models.Post;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +60,7 @@ public class PostDetailActivity extends BaseActivity {
     private DatabaseReference mPostReference;
     private DatabaseReference mCommentsReference;
     private ValueEventListener mPostListener;
-    private String mPostKey;
+    public static String mPostKey;
     private CommentAdapter mAdapter;
 
     private TextView mAuthorView;
@@ -65,6 +75,10 @@ public class PostDetailActivity extends BaseActivity {
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     StorageReference imageRef;
+    public static Bitmap bmp;
+    Post post;
+    String userId;
+    public static String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +90,10 @@ public class PostDetailActivity extends BaseActivity {
         if (mPostKey == null) {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
+
+        userId = getUid();
+        //Toast toast = Toast.makeText(PostDetailActivity.this, userId, Toast.LENGTH_SHORT);
+        //toast.show();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -90,7 +108,7 @@ public class PostDetailActivity extends BaseActivity {
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
 
-        imageRef = mStorageRef.child("featured/" + mPostKey+".jpg");
+        imageRef = mStorageRef.child("featured/" + mPostKey + ".jpg");
 
         // Initialize Views
         mAuthorView = (TextView) findViewById(R.id.post_author);
@@ -116,7 +134,7 @@ public class PostDetailActivity extends BaseActivity {
                 return false;
             }
         });
-        ScrollView scroll = (ScrollView)findViewById(R.id.post_details_scroll);
+        ScrollView scroll = (ScrollView) findViewById(R.id.post_details_scroll);
         scroll.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -138,11 +156,11 @@ public class PostDetailActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(s.toString().trim().length()==0){
+                if (s.toString().trim().length() == 0) {
                     findViewById(R.id.sybmit_comment).setVisibility(View.GONE);
                 } else {
                     findViewById(R.id.sybmit_comment).setVisibility(View.VISIBLE);
-            }
+                }
 
 
             }
@@ -157,7 +175,7 @@ public class PostDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String commentText = mCommentField.getText().toString().trim();
-                if(commentText.length() > 0)
+                if (commentText.length() > 0)
                     postComment();
             }
         });
@@ -176,21 +194,44 @@ public class PostDetailActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
-                Post post = dataSnapshot.getValue(Post.class);
+                post = dataSnapshot.getValue(Post.class);
                 // [START_EXCLUDE]
                 mAuthorView.setText(post.author);
                 mDateView.setText(post.date);
                 mTitleView.setText(post.title);
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]
+
+                if (userId.equals(post.uid)) {
+                    RelativeLayout post_edit = (RelativeLayout) findViewById(R.id.post_edit);
+                    post_edit.setVisibility(View.VISIBLE);
+                    post_edit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Toast.makeText(getActivity(), "Edit Clicked", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(PostDetailActivity.this, NewPostActivity.class);
+                            intent.putExtra("condition", "edit");
+                            intent.putExtra("post_key", mPostKey);
+                            startActivity(intent);
+                        }
+                    });
+                }
+
                 final long ONE_MEGABYTE = 1024 * 1024;
                 imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
                         //Toast.makeText(PostDetailActivity.this, "Invalid Name", Toast.LENGTH_SHORT).show()
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        mFeatured.setImageBitmap(bmp);;
-                        mFeatured.setVisibility(View.VISIBLE);
+                        bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        mFeatured.setImageBitmap(bmp);
+                        mFeatured.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(PostDetailActivity.this, ViewImage.class));
+                            }
+                        });
+                        title = post.title;
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -243,7 +284,7 @@ public class PostDetailActivity extends BaseActivity {
                         Comment comment = new Comment(uid, authorName, commentText);
 
                         // Push the comment, it will appear in the list
-                        if(commentText.trim().length()>0)
+                        if (commentText.trim().length() > 0)
                             mCommentsReference.push().setValue(comment);
 
                         // Clear the field
@@ -396,7 +437,7 @@ public class PostDetailActivity extends BaseActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         //startActivity(new Intent(getApplicationContext(), MainContainer.class));
         finish();
     }

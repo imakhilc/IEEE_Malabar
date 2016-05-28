@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,24 +15,32 @@
         <activity
             android:name=".SplashScreen"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PostDetailActivity" />
         <activity
-            android:name=".Forgot"
-            android:theme="@style/AppTheme.TransBack" />
+            android:name=".PostDetailActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateVisible|adjustPan|stateHidden" />
-        <activity android:name=".NewPostActivity" />
-        <activity android:name=".ActivityMain"></activity>
+        <activity
+            android:name=".NewPostActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ActivityMain"
+            android:screenOrientation="portrait" />
+        <activity
+            android:theme="@style/AppTheme.TransBack"
+            android:name=".ViewImage"/>
     </application>
 
 </manifest>

@@ -18,28 +18,32 @@
     <string name="select_cat">Select Catagory</string>
 
     <string-array name="colleges">
-        <item>College of Engineering Trikaripur</item>
-        <item>2nd clg</item>
-        <item>3rd clg</item>
-        <item>4th clg</item>
-        <item>5th clg</item>
-        <item>6th clg</item>
-        <item>7th clg</item>
-        <item>8th clg</item>
-        <item>2nd clg</item>
-        <item>3rd clg</item>
-        <item>4th clg</item>
-        <item>5th clg</item>
-        <item>6th clg</item>
-        <item>7th clg</item>
-        <item>8th clg</item>
-        <item>7th clg</item>
+        <item>Select College</item>
+        <item>GCE, Kannur</item>
+        <item>GEC, Kozhikode</item>
+        <item>VJEC, Kannur</item>
+        <item>MES, Kuttipuram</item>
+        <item>MEA, Perinthalmanna</item>
+        <item>KMCT, Kozhikode</item>
+        <item>NSS, Palakkad</item>
+        <item>SIMAT, Palakkad</item>
+        <item>GEC, Palakkad</item>
+        <item>LBS, Kasargod</item>
+        <item>CET, Thrikkaripur</item>
+        <item>AWH, Kozhikode</item>
+        <item>NIT, Calicut</item>
+        <item>NIELT, Calicut</item>
+        <item>Aryanet, Palakkad</item>
+        <item>SNGEC, Kannur</item>
+        <item>GEC, Wayanad</item>
+        <item>JCET, Palakkad</item>
+        <item>GEC, Vadakara</item>
     </string-array>
 
     <string-array name="events">
         <item>All Events</item>
         <item>My Student Branch</item>
-        <item>Malabar Hub</item>
+        <item>Top Starred Events</item>
     </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -51,7 +51,6 @@
 
                         <EditText
                             android:id="@+id/fullname1"
-                            android:textSize="16sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -63,7 +62,8 @@
                             android:singleLine="true"
                             android:textColor="#fff"
                             android:textColorHighlight="@color/colorPrimary"
-                            android:textColorHint="#80ffffff" />
+                            android:textColorHint="#80ffffff"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -92,7 +92,6 @@
 
                         <EditText
                             android:id="@+id/email1"
-                            android:textSize="16sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -104,7 +103,8 @@
                             android:singleLine="true"
                             android:textColor="#fff"
                             android:textColorHighlight="@color/colorPrimary"
-                            android:textColorHint="#80ffffff" />
+                            android:textColorHint="#80ffffff"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -131,14 +131,26 @@
                         android:layout_height="match_parent"
                         android:background="@color/etcolor">
 
-                        <Spinner
-                            android:id="@+id/college1"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@android:color/transparent"
-                            android:entries="@array/colleges"
-                            android:popupBackground="@color/colorPrimary"
-                            android:prompt="@string/select" />
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:background="#00ffffff"
+                                android:id="@+id/spinner_e"
+                                android:paddingRight="16dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <Spinner
+                                android:id="@+id/college1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:entries="@array/colleges"
+                                android:popupBackground="@color/colorPrimary"
+                                android:prompt="@string/select" />
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -167,7 +179,6 @@
 
                         <EditText
                             android:id="@+id/ieee1"
-                            android:textSize="16sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -179,7 +190,8 @@
                             android:singleLine="true"
                             android:textColor="#fff"
                             android:textColorHighlight="@color/colorPrimary"
-                            android:textColorHint="#80ffffff" />
+                            android:textColorHint="#80ffffff"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -208,7 +220,6 @@
 
                         <EditText
                             android:id="@+id/password1"
-                            android:textSize="16sp"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
@@ -221,7 +232,8 @@
                             android:singleLine="true"
                             android:textColor="#fff"
                             android:textColorHighlight="@color/colorPrimary"
-                            android:textColorHint="#80ffffff" />
+                            android:textColorHint="#80ffffff"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 

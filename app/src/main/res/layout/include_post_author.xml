@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -16,7 +17,7 @@
             android:id="@+id/post_author_photo"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/profile" />
+            android:src="@drawable/ic_account_square" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -39,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="2dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginLeft="10dp"
                 android:textSize="10dp"
                 tools:text="25-May-2016" />
@@ -48,15 +49,24 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:visibility="gone"
+    <LinearLayout
+        android:background="#bbb"
         android:layout_marginTop="10dp"
-        android:id="@+id/feature"
+        android:id="@+id/f_layout"
+        android:layout_below="@+id/user"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center"
-        android:src="@drawable/login_bg"/>
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <ImageView
+            android:layout_margin="1dp"
+            android:id="@+id/feature"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_below="@+id/user"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:background="@color/colorPrimary"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_feat" />
+    </LinearLayout>
+</RelativeLayout>

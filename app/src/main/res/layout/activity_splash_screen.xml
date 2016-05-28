@@ -11,6 +11,14 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
-        android:src="@drawable/login_bg" />
+        android:src="@drawable/splash" />
+
+    <ProgressBar
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:id="@+id/progressBar"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

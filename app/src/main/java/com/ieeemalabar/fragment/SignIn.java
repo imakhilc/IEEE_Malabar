@@ -28,7 +28,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ieeemalabar.ActivityMain;
-import com.ieeemalabar.Forgot;
 import com.ieeemalabar.R;
 
 import java.util.regex.Matcher;
@@ -42,21 +41,22 @@ public class SignIn extends Fragment {
     private FirebaseAuth mAuth;
     private Toast mToastText;
     Button mSignInButton;
-    EditText mEmailField,mPasswordField;
+    EditText mEmailField, mPasswordField;
     ProgressDialog pd;
     CheckBox check;
     Boolean tick = true;
     private DatabaseReference mDatabase;
     private static final String TAG = "SignIn";
+    Boolean reset = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return  inflater.inflate(R.layout.signin,container,false);
+        return inflater.inflate(R.layout.signin, container, false);
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -100,8 +100,34 @@ public class SignIn extends Fragment {
         forgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent forgot = new Intent(getContext(), Forgot.class);
-                startActivity(forgot);
+                //Intent forgot = new Intent(getContext(), Forgot.class);
+                //startActivity(forgot);
+                if (!isEmailValid(mEmailField.getText().toString())) {
+                    mEmailField.setError("Invalid email id");
+                    reset = false;
+                } else {
+                    mEmailField.setError(null);
+                    reset = true;
+                    hideSoftKeyboard(getActivity());
+                    pd.setMessage("Please wait..");
+                    pd.show();
+                }
+                if (reset) {
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    auth.sendPasswordResetEmail(mEmailField.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        displayMessage("Reset mail sent");
+                                        pd.hide();
+                                    }else{
+                                        displayMessage("Something went wrong!");
+                                        pd.hide();
+                                    }
+                                }
+                            });
+                }
             }
         });
     }
@@ -112,7 +138,7 @@ public class SignIn extends Fragment {
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
@@ -161,7 +187,7 @@ public class SignIn extends Fragment {
 
     private boolean validateForm() {
         boolean result = true;
-        if (TextUtils.isEmpty(mEmailField.getText().toString())||!isEmailValid(mEmailField.getText().toString())) {
+        if (TextUtils.isEmpty(mEmailField.getText().toString()) || !isEmailValid(mEmailField.getText().toString())) {
             mEmailField.setError("Invalid email id");
             result = false;
         } else {

@@ -2,6 +2,7 @@ package com.ieeemalabar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.ieeemalabar.fragment.RecentEventsFragment;
+import com.ieeemalabar.fragment.SBEventsFragment;
 import com.ieeemalabar.fragment.SignIn;
+import com.ieeemalabar.fragment.TopStarredFragment;
+import com.ieeemalabar.models.User;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -30,7 +40,7 @@ public class ActivityMain extends AppCompatActivity {
             getSupportActionBar().setElevation(0);
         }
 
-        setTitle("Events");
+        setTitle("All Events");
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //setRetainInstance(true);
         viewPager.setOffscreenPageLimit(4);
@@ -40,49 +50,75 @@ public class ActivityMain extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_event_light);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_notification_dark);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_event_dark);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_college_dark);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_stars_dark);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                if(tab.getPosition()==0) {
+                if (tab.getPosition() == 0) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
-                    setTitle("Events");
-                }
-                else if(tab.getPosition()==1) {
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_notification_light);
-                    setTitle("Notifications");
-                }
-                else if(tab.getPosition()==2) {
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
-                    setTitle("Events");
+                    setTitle("All Events");
+                } else if (tab.getPosition() == 1) {
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_light);
+                    setTitle("SB Events");
+                } else if (tab.getPosition() == 2) {
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_light);
+                    setTitle("Top Starred Events");
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                if(tab.getPosition()==0)
+                if (tab.getPosition() == 0)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_dark);
-                else if(tab.getPosition()==1)
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_notification_dark);
-                else if(tab.getPosition()==2)
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_dark);
+                else if (tab.getPosition() == 1)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_dark);
+                else if (tab.getPosition() == 2)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_dark);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                if(tab.getPosition()==0)
+                if (tab.getPosition() == 0)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
-                else if(tab.getPosition()==1)
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_notification_light);
-                else if(tab.getPosition()==2)
-                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
+                else if (tab.getPosition() == 1)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_light);
+                else if (tab.getPosition() == 2)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_light);
             }
         });
+
+        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        User user = dataSnapshot.getValue(User.class);
+
+                        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("college", user.college);
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        // Button launches NewPostActivity
+        findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
+            }
+        });
+
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
@@ -97,11 +133,11 @@ public class ActivityMain extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new MainActivity();
+                    return new RecentEventsFragment();
                 case 1:
-                    return new SignIn();
+                    return new SBEventsFragment();
                 case 2:
-                    return new SignIn();
+                    return new TopStarredFragment();
                 default:
                     return null;
             }
