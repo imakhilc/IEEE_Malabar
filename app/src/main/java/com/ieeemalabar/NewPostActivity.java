@@ -3,7 +3,9 @@ package com.ieeemalabar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,8 +15,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -74,12 +78,16 @@ public class NewPostActivity extends BaseActivity {
     Post post;
     Bitmap bmp;
     Boolean click = false;
+    String college;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
         context = this;
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -92,6 +100,9 @@ public class NewPostActivity extends BaseActivity {
         }
 
         if (condition != "") {
+            //LinearLayout del_lin = (LinearLayout) findViewById(R.id.del_lin);
+            //del_lin.setVisibility(View.VISIBLE);
+
             setTitle("Edit Report");
             TextView pic_name = (TextView) findViewById(R.id.pic_name);
             pic_name.setText("Replace old image (Optional)");
@@ -118,6 +129,106 @@ public class NewPostActivity extends BaseActivity {
                     if (!click) {
                         mTitleField.setText(post.title);
                         mBodyField.setText(post.body);
+
+                        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                        college = settings.getString("college", "");
+
+                        /*Button delete = (Button) findViewById(R.id.delete_b);
+                        assert delete != null;
+                        delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Delete entry")
+                                        .setMessage("Are you sure you want to delete this entry?")
+                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // continue with delete
+
+                                                PostDetailActivity.PostDA.finish();
+
+                                                pd.setMessage("Deleting...");
+                                                pd.show();
+
+                                                mDatabase = FirebaseDatabase.getInstance().getReference();
+                                                mStorage = FirebaseStorage.getInstance();
+                                                mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
+
+                                                imageRef = mStorageRef.child("featured/"+mPostKey+".jpg");
+
+                                                imageRef.delete().addOnSuccessListener(new OnSuccessListener() {
+                                                    @Override
+                                                    public void onSuccess(Object o) {
+
+                                                        //ActivityMain.AM.finish();
+
+                                                        DatabaseReference delRef1 = FirebaseDatabase.getInstance().getReference()
+                                                                .child("posts").child(mPostKey);
+                                                        DatabaseReference delRef2 = FirebaseDatabase.getInstance().getReference()
+                                                                .child("user-posts").child(college).child(mPostKey);
+                                                        delRef1.setValue(null);
+                                                        delRef2.setValue(null);
+
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("author").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("title").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("date").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("college").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("starCount").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("stars").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("uid").removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).child("body").removeValue();
+
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey).removeValue();
+
+                                                        //Intent intent = new Intent(NewPostActivity.this, ActivityMain.class);
+                                                        //intent.putExtra("delete", "true");
+                                                        //intent.putExtra("post_key", mPostKey);
+                                                        //startActivity(intent);
+                                                        finish();
+                                                    }
+
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception exception) {
+                                                        Toast.makeText(NewPostActivity.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                                PostDetailActivity.PostDA.finish();
+                                                ActivityMain.AM.finish();
+
+                                                pd.setMessage("Deleting...");
+                                                pd.show();
+
+                                                DatabaseReference delRef1 = FirebaseDatabase.getInstance().getReference()
+                                                        .child("posts").child(mPostKey);
+                                                DatabaseReference delRef2 = FirebaseDatabase.getInstance().getReference()
+                                                        .child("user-posts").child(college).child(mPostKey);
+                                                delRef1.removeValue();
+                                                delRef2.removeValue();
+
+                                                pd.hide();
+                                                startActivity(new Intent(NewPostActivity.this, ActivityMain.class));
+                                                finish();
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // do nothing
+                                            }
+                                        })
+                                        .setIcon(android.R.drawable.ic_dialog_alert)
+                                        .show();
+                            }
+                        });*/
+
                         // [END_EXCLUDE]
                         final long ONE_MEGABYTE = 1024 * 1024;
                         imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -515,5 +626,10 @@ public class NewPostActivity extends BaseActivity {
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
 }

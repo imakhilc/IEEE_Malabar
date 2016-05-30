@@ -136,6 +136,7 @@
                             android:layout_height="match_parent">
 
                             <EditText
+                                android:editable="false"
                                 android:background="#00ffffff"
                                 android:id="@+id/spinner_e"
                                 android:paddingRight="16dp"

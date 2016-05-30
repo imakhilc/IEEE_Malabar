@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="0px"
-        android:layout_height="0px"/>
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -36,47 +35,45 @@
                         android:layout_height="45dp"
                         android:background="#eee"
                         android:hint="Title"
-                        android:textStyle="bold"
                         android:maxLines="1"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:singleLine="true"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <ImageView
-                        android:visibility="gone"
-                        android:layout_marginTop="10dp"
                         android:id="@+id/post_img"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/login_bg"/>
+                        android:src="@drawable/login_bg"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:orientation="horizontal"
                         android:weightSum="4">
 
                         <Button
-                            android:focusableInTouchMode="false"
                             android:id="@+id/img_buttom"
                             style="@android:style/Widget.EditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="3"
                             android:background="@drawable/button"
-                            android:text="SELECT"
+                            android:focusableInTouchMode="false"
                             android:gravity="center"
+                            android:text="SELECT"
                             android:textColor="#fff"
                             android:textSize="16sp" />
 
                         <TextView
-                            android:paddingRight="16dp"
                             android:id="@+id/pic_name"
-                            android:textColor="@color/secondary_text"
                             style="@android:style/Widget.EditText"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -84,7 +81,9 @@
                             android:background="#eee"
                             android:gravity="center|left"
                             android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
                             android:text="Upload image"
+                            android:textColor="@color/secondary_text"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -95,8 +94,6 @@
                         android:background="#eee">
 
                         <EditText
-                            android:paddingTop="16dp"
-                            android:paddingBottom="16dp"
                             android:id="@+id/field_body"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -105,10 +102,29 @@
                             android:hint="Write your report..."
                             android:inputType="textMultiLine"
                             android:maxLines="100"
+                            android:paddingBottom="16dp"
                             android:paddingLeft="16dp"
                             android:paddingRight="16dp"
+                            android:paddingTop="16dp"
                             android:scrollHorizontally="false"
                             android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:layout_marginTop="8dp"
+                        android:background="#f00"
+                        android:id="@+id/del_lin"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp">
+                        <Button
+                            android:layout_margin="1dp"
+                            android:id="@+id/delete_b"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/del_button"
+                            android:text="Delete Report"
+                            android:textColor="@drawable/del_button_text" />
                     </LinearLayout>
 
                 </LinearLayout>

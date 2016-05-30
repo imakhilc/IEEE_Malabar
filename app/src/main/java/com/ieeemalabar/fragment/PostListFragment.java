@@ -102,8 +102,9 @@ public abstract class PostListFragment extends Fragment {
                     @Override
                     public void onClick(View starView) {
                         // Neeed to write to both places the post is stored
-                        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                        String college = settings.getString("college", "");
+                        //SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                        //String college = settings.getString("college", "");
+                        String college = viewHolder.collegeView.getText().toString();
 
                         DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
                         DatabaseReference userPostRef = mDatabase.child("user-posts").child(college).child(postRef.getKey());

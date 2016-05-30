@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class PostDetailActivity extends BaseActivity {
 
     private TextView mAuthorView;
     private TextView mDateView;
+    private TextView mCollegeView;
     private TextView mTitleView;
     private TextView mBodyView;
     private EditText mCommentField;
@@ -79,31 +81,69 @@ public class PostDetailActivity extends BaseActivity {
     Post post;
     String userId;
     public static String title;
+    public static PostDetailActivity PostDA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
+        PostDA = this;
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         // Get post key from intent
-        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
-        if (mPostKey == null) {
+        mPostKey =
+
+                getIntent()
+
+                        .
+
+                                getStringExtra(EXTRA_POST_KEY);
+
+        if (mPostKey == null)
+
+        {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-        userId = getUid();
+        userId =
+
+                getUid();
         //Toast toast = Toast.makeText(PostDetailActivity.this, userId, Toast.LENGTH_SHORT);
         //toast.show();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+
+        {
             getSupportActionBar().setElevation(0);
         }
 
         // Initialize Database
-        mPostReference = FirebaseDatabase.getInstance().getReference()
-                .child("posts").child(mPostKey);
-        mCommentsReference = FirebaseDatabase.getInstance().getReference()
-                .child("post-comments").child(mPostKey);
+        mPostReference = FirebaseDatabase.getInstance().
+
+                getReference()
+
+                .
+
+                        child("posts")
+
+                .
+
+                        child(mPostKey);
+
+        mCommentsReference = FirebaseDatabase.getInstance().
+
+                getReference()
+
+                .
+
+                        child("post-comments")
+
+                .
+
+                        child(mPostKey);
 
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
@@ -111,83 +151,129 @@ public class PostDetailActivity extends BaseActivity {
         imageRef = mStorageRef.child("featured/" + mPostKey + ".jpg");
 
         // Initialize Views
-        mAuthorView = (TextView) findViewById(R.id.post_author);
-        mDateView = (TextView) findViewById(R.id.post_date);
-        mTitleView = (TextView) findViewById(R.id.post_title);
-        mBodyView = (TextView) findViewById(R.id.post_body);
-        mFeatured = (ImageView) findViewById(R.id.feature);
-        mCommentField = (EditText) findViewById(R.id.field_comment_text);
-        mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
+        mAuthorView = (TextView)
+
+                findViewById(R.id.post_author);
+
+        mDateView = (TextView)
+
+                findViewById(R.id.post_date);
+
+        mCollegeView = (TextView) findViewById(R.id.collegeView);
+
+        mTitleView = (TextView)
+
+                findViewById(R.id.post_title);
+
+        mBodyView = (TextView)
+
+                findViewById(R.id.post_body);
+
+        mFeatured = (ImageView)
+
+                findViewById(R.id.feature);
+
+        mCommentField = (EditText)
+
+                findViewById(R.id.field_comment_text);
+
+        mCommentsRecycler = (RecyclerView)
+
+                findViewById(R.id.recycler_comments);
+
         mCommentsRecycler.setNestedScrollingEnabled(false);
 
-        mCommentField.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (v.getId() == R.id.field_comment_text) {
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                        case MotionEvent.ACTION_UP:
-                            v.getParent().requestDisallowInterceptTouchEvent(false);
-                            break;
-                    }
-                }
-                return false;
-            }
-        });
+        mCommentField.setOnTouchListener(new View.OnTouchListener()
+
+                                         {
+                                             @Override
+                                             public boolean onTouch(View v, MotionEvent event) {
+                                                 if (v.getId() == R.id.field_comment_text) {
+                                                     v.getParent().requestDisallowInterceptTouchEvent(true);
+                                                     switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                                                         case MotionEvent.ACTION_UP:
+                                                             v.getParent().requestDisallowInterceptTouchEvent(false);
+                                                             break;
+                                                     }
+                                                 }
+                                                 return false;
+                                             }
+                                         }
+
+        );
         ScrollView scroll = (ScrollView) findViewById(R.id.post_details_scroll);
-        scroll.setOnTouchListener(new View.OnTouchListener() {
+        scroll.setOnTouchListener(new View.OnTouchListener()
 
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (mCommentField.hasFocus()) {
-                    mCommentField.clearFocus();
-                }
-                return false;
-            }
-        });
+                                  {
 
-        mCommentField.addTextChangedListener(new TextWatcher() {
+                                      @Override
+                                      public boolean onTouch(View v, MotionEvent event) {
+                                          if (mCommentField.hasFocus()) {
+                                              mCommentField.clearFocus();
+                                          }
+                                          return false;
+                                      }
+                                  }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        );
 
-            }
+        mCommentField.addTextChangedListener(new
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                     TextWatcher() {
 
-                if (s.toString().trim().length() == 0) {
-                    findViewById(R.id.sybmit_comment).setVisibility(View.GONE);
-                } else {
-                    findViewById(R.id.sybmit_comment).setVisibility(View.VISIBLE);
-                }
+                                                         @Override
+                                                         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                                         }
+
+                                                         @Override
+                                                         public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                                             if (s.toString().trim().length() == 0) {
+                                                                 findViewById(R.id.sybmit_comment).setVisibility(View.GONE);
+                                                             } else {
+                                                                 findViewById(R.id.sybmit_comment).setVisibility(View.VISIBLE);
+                                                             }
 
 
-            }
+                                                         }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                                                         @Override
+                                                         public void afterTextChanged(Editable s) {
 
-            }
-        });
+                                                         }
+                                                     }
 
-        findViewById(R.id.sybmit_comment).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String commentText = mCommentField.getText().toString().trim();
-                if (commentText.length() > 0)
-                    postComment();
-            }
-        });
+        );
 
-        mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        findViewById(R.id.sybmit_comment)
+
+                .
+
+                        setOnClickListener(new View.OnClickListener() {
+                                               @Override
+                                               public void onClick(View v) {
+                                                   String commentText = mCommentField.getText().toString().trim();
+                                                   if (commentText.length() > 0)
+                                                       postComment();
+                                               }
+                                           }
+
+                        );
+
+        mCommentsRecycler.setLayoutManager(new
+
+                        LinearLayoutManager(this)
+
+        );
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
+        LinearLayout f_layout = (LinearLayout) findViewById(R.id.f_layout);
+        f_layout.setVisibility(View.VISIBLE);
         // Add value event listener to the post
         // [START post_value_event_listener]
         mPostListener = new ValueEventListener() {
@@ -198,7 +284,8 @@ public class PostDetailActivity extends BaseActivity {
                 // [START_EXCLUDE]
                 mAuthorView.setText(post.author);
                 mDateView.setText(post.date);
-                mTitleView.setText(post.title);
+                mCollegeView.setText(post.college);
+                mTitleView.setText(post.title.substring(0,1).toUpperCase() + post.title.substring(1));
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]
 
@@ -434,11 +521,17 @@ public class PostDetailActivity extends BaseActivity {
                 mDatabaseReference.removeEventListener(mChildEventListener);
             }
         }
+
     }
 
     @Override
     public void onBackPressed() {
         //startActivity(new Intent(getApplicationContext(), MainContainer.class));
         finish();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
 }

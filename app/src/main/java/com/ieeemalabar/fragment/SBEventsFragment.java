@@ -17,7 +17,6 @@ public class SBEventsFragment extends PostListFragment {
     public Query getQuery(DatabaseReference databaseReference) {
 
         SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-        settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
         String college = settings.getString("college", "");
         // All my posts
         return databaseReference.child("user-posts")

@@ -1,9 +1,11 @@
 package com.ieeemalabar;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,10 +16,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.batch.android.Batch;
+import com.batch.android.Config;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ieeemalabar.fragment.RecentEventsFragment;
@@ -30,11 +37,20 @@ public class ActivityMain extends AppCompatActivity {
 
     TabLayout tabLayout;
     ViewPager viewPager;
+    public static ActivityMain AM;
+    public Boolean close = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_main);
+
+        AM = this;
+        loadFirebase();
+
+        Batch.Push.setGCMSenderId("972033953090");
+        Batch.setConfig(new Config("DEV574A78655733CB7AF4474E32F62")); //Dev
+        //Batch.setConfig(new Config("574A78655589D5CA100B99DA0A86F5")); //Live
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -62,7 +78,7 @@ public class ActivityMain extends AppCompatActivity {
                     setTitle("All Events");
                 } else if (tab.getPosition() == 1) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_light);
-                    setTitle("SB Events");
+                    setTitle("Our SB Events");
                 } else if (tab.getPosition() == 2) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_light);
                     setTitle("Top Starred Events");
@@ -92,24 +108,25 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        /*FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user information
-                        User user = dataSnapshot.getValue(User.class);
-
+                        String college = dataSnapshot.toString();
                         SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("college", user.college);
+                        editor.putString("college", college);
                         editor.commit();
+                        Toast.makeText(ActivityMain.this, college, Toast.LENGTH_SHORT).show();
+                        pd.hide();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                });*/
 
         // Button launches NewPostActivity
         findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
@@ -123,7 +140,7 @@ public class ActivityMain extends AppCompatActivity {
 
     private class CustomAdapter extends FragmentPagerAdapter {
 
-        private String fragments [] = {"","",""};
+        private String fragments[] = {"", "", ""};
 
         public CustomAdapter(FragmentManager supportFragmentManager, Context applicationContext) {
             super(supportFragmentManager);
@@ -131,7 +148,7 @@ public class ActivityMain extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
                     return new RecentEventsFragment();
                 case 1:
@@ -155,7 +172,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     @Override
-     public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -173,4 +190,76 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
+        Batch.onStart(this);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Batch.onStop(this);
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        Batch.onDestroy(this);
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        Batch.onNewIntent(this, intent);
+
+        super.onNewIntent(intent);
+    }
+
+    public void loadFirebase(){
+        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        String college = "";
+                        college = dataSnapshot.getValue().toString();
+                        if (college != "") {
+                            ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (close) {
+            SplashScreen.SP.finish();
+            super.onBackPressed();
+            return;
+        }
+
+        this.close = true;
+        Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                close = false;
+            }
+        }, 2000);
+    }
 }

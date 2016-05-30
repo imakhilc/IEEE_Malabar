@@ -3,6 +3,7 @@ package com.ieeemalabar.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,8 +26,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ieeemalabar.ActivityMain;
 import com.ieeemalabar.R;
 
@@ -164,22 +168,27 @@ public class SignIn extends Fragment {
         hideSoftKeyboard(getActivity());
         pd.setMessage("Logging In");
         pd.show();
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        final String email = mEmailField.getText().toString();
+        final String password = mPasswordField.getText().toString();
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
-                        pd.hide();
+                        //pd.hide();
 
                         if (task.isSuccessful()) {
-                            displayMessage("Login success");
-                            startActivity(new Intent(getActivity(), ActivityMain.class));
-                            getActivity().finish();
+                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("user", email);
+                            editor.putString("pass", password);
+                            editor.commit();
+
+                            getCollege();
                         } else {
                             displayMessage("Login Failed");
+                            pd.hide();
                         }
                     }
                 });
@@ -202,5 +211,33 @@ public class SignIn extends Fragment {
         }
 
         return result;
+    }
+
+    public void getCollege(){
+        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        String college = "";
+                        college = dataSnapshot.getValue().toString();
+                        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("college", college);
+                        editor.commit();
+                        if(college != "") {
+                            //Toast.makeText(getActivity(), college, Toast.LENGTH_SHORT).show();
+                            displayMessage("Login success");
+                            startActivity(new Intent(getActivity(), ActivityMain.class));
+                            getActivity().finish();
+                            pd.hide();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 }

@@ -55,6 +55,7 @@ public class SignUp extends Fragment {
     Boolean tick = true, college_op = false;
     private DatabaseReference mDatabase;
     private static final String TAG = "SignUp";
+    private String email, password;
 
 
     @Nullable
@@ -157,8 +158,8 @@ public class SignUp extends Fragment {
         hideSoftKeyboard(getActivity());
         pd.setMessage("Creating Account");
         pd.show();
-        String email = mEmailField.getText().toString();
-        String password = mPasswordField.getText().toString();
+        email = mEmailField.getText().toString();
+        password = mPasswordField.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -168,6 +169,12 @@ public class SignUp extends Fragment {
                         pd.hide();
 
                         if (task.isSuccessful()) {
+                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("user", email);
+                            editor.putString("pass", password);
+                            editor.commit();
+
                             displayMessage("Registration success");
                             onAuthSuccess(task.getResult().getUser());
                         } else {

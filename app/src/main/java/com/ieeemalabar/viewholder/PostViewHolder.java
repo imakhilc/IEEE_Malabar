@@ -33,6 +33,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     public TextView titleView;
     public TextView authorView;
     public TextView dateView;
+    public TextView collegeView;
     public ImageButton starView;
     public TextView numStarsView;
     public TextView bodyView;
@@ -51,6 +52,7 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         titleView = (TextView) itemView.findViewById(R.id.post_title);
         authorView = (TextView) itemView.findViewById(R.id.post_author);
         dateView = (TextView) itemView.findViewById(R.id.post_date);
+        collegeView = (TextView) itemView.findViewById(R.id.collegeView);
         feature = (ImageView) itemView.findViewById(R.id.feature);
         starView = (ImageButton) itemView.findViewById(R.id.star);
         numStarsView = (TextView) itemView.findViewById(R.id.post_num_stars);
@@ -58,11 +60,12 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Post post, View.OnClickListener starClickListener) {
-        titleView.setText(post.title);
+        titleView.setText(post.title.substring(0,1).toUpperCase() + post.title.substring(1));
         authorView.setText(post.author);
         dateView.setText(post.date);
+        collegeView.setText(post.college);
         numStarsView.setText(String.valueOf(post.starCount));
-        String s = post.body.substring(0, Math.min(post.body.length(), 100));
+        String s = post.body.substring(0, Math.min(post.body.length(), 150));
         s = s.replaceAll("[\\t\\n\\r]", " ");
         bodyView.setText(s + "...");
         feature.setVisibility(View.GONE);
