@@ -181,6 +181,13 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
+
+                SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("user", "");
+                editor.putString("pass", "");
+                editor.commit();
+
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();

@@ -81,4 +81,10 @@ public class LoginActivity extends FragmentActivity {
             return fragments[position];
         }
     }
+
+    @Override
+    public void onBackPressed(){
+        SplashScreen.SP.finish();
+        finish();
+    }
 }

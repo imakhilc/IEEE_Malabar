@@ -3,18 +3,22 @@ package com.ieeemalabar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,10 +61,17 @@ public class SplashScreen extends Activity {
                             //pd.hide();
                             if (task.isSuccessful()) {
                                 startActivity(new Intent(SplashScreen.this, ActivityMain.class));
-                                Toast.makeText(SplashScreen.this, password, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(SplashScreen.this, password, Toast.LENGTH_SHORT).show();
                                 //finish();
                             }else {
-                                Toast.makeText(SplashScreen.this, "No internet access", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SplashScreen.this, "No internet access!", Toast.LENGTH_SHORT).show();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        finish();
+                                    }
+                                }, 3200);
                             }
                         }
                     });
