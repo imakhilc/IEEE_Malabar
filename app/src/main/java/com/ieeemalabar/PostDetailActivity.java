@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -272,7 +273,7 @@ public class PostDetailActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        LinearLayout f_layout = (LinearLayout) findViewById(R.id.f_layout);
+        RelativeLayout f_layout = (RelativeLayout) findViewById(R.id.f_layout);
         f_layout.setVisibility(View.VISIBLE);
         // Add value event listener to the post
         // [START post_value_event_listener]
@@ -285,7 +286,7 @@ public class PostDetailActivity extends BaseActivity {
                 mAuthorView.setText(post.author);
                 mDateView.setText(post.date);
                 mCollegeView.setText(post.college);
-                mTitleView.setText(post.title.substring(0,1).toUpperCase() + post.title.substring(1));
+                mTitleView.setText(post.title.substring(0, 1).toUpperCase() + post.title.substring(1));
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]
 
@@ -318,6 +319,8 @@ public class PostDetailActivity extends BaseActivity {
                             }
                         });
                         title = post.title;
+                        ProgressBar image_load = (ProgressBar) findViewById(R.id.image_load);
+                        image_load.setVisibility(View.GONE);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {

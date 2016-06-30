@@ -46,7 +46,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:visibility="gone"
         android:background="#bbb"
         android:layout_marginTop="10dp"
@@ -60,11 +60,19 @@
             android:id="@+id/feature"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:layout_below="@+id/user"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:background="@color/colorPrimary"
             android:scaleType="centerCrop"
             android:src="@drawable/default_feat" />
-    </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/image_load"
+            android:layout_margin="10dp"
+            android:layout_alignBottom="@+id/feature"
+            android:layout_alignRight="@+id/feature"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </RelativeLayout>
 </RelativeLayout>

@@ -3,6 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
     <item
+        android:id="@+id/notification"
+        android:title="Notification"
+        android:icon="@drawable/ic_notifications"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/profile"
+        android:title="Profile"
+        android:visible="true"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:title="@string/menu_logout"
         android:visible="true"

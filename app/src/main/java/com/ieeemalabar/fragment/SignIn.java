@@ -221,11 +221,12 @@ public class SignIn extends Fragment {
                         // Get user information
                         String college = "";
                         college = dataSnapshot.getValue().toString();
-                        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("college", college);
-                        editor.commit();
                         if(college != "") {
+                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("college", college);
+                            editor.commit();
+
                             //Toast.makeText(getActivity(), college, Toast.LENGTH_SHORT).show();
                             displayMessage("Login success");
                             startActivity(new Intent(getActivity(), ActivityMain.class));

@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textIsSelectable="true"
         android:textStyle="bold"
         tools:text="My First Post" />
 

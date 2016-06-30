@@ -19,8 +19,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.batch.android.Batch;
-import com.batch.android.Config;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,10 +45,6 @@ public class ActivityMain extends AppCompatActivity {
 
         AM = this;
         loadFirebase();
-
-        Batch.Push.setGCMSenderId("972033953090");
-        Batch.setConfig(new Config("DEV574A78655733CB7AF4474E32F62")); //Dev
-        //Batch.setConfig(new Config("574A78655589D5CA100B99DA0A86F5")); //Live
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
@@ -108,27 +102,7 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        /*FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user information
-                        String college = dataSnapshot.toString();
-                        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString("college", college);
-                        editor.commit();
-                        Toast.makeText(ActivityMain.this, college, Toast.LENGTH_SHORT).show();
-                        pd.hide();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });*/
-
-        // Button launches NewPostActivity
+        //Button launches NewPostActivity
         findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,7 +155,6 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-
                 SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("user", "");
@@ -192,44 +165,18 @@ public class ActivityMain extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
                 return true;
+            case R.id.profile:
+                startActivity(new Intent(this, Profile.class));
+                return true;
+            case R.id.notification:
+                startActivity(new Intent(this, Notifications.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-
-        Batch.onStart(this);
-    }
-
-    @Override
-    protected void onStop()
-    {
-        Batch.onStop(this);
-
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        Batch.onDestroy(this);
-
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent)
-    {
-        Batch.onNewIntent(this, intent);
-
-        super.onNewIntent(intent);
-    }
-
-    public void loadFirebase(){
+    public void loadFirebase() {
         FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -251,7 +198,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         if (close) {
             SplashScreen.SP.finish();
             super.onBackPressed();

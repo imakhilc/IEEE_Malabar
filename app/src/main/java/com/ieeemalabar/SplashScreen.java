@@ -62,7 +62,7 @@ public class SplashScreen extends Activity {
                             if (task.isSuccessful()) {
                                 startActivity(new Intent(SplashScreen.this, ActivityMain.class));
                                 //Toast.makeText(SplashScreen.this, password, Toast.LENGTH_SHORT).show();
-                                //finish();
+                                finish();
                             }else {
                                 Toast.makeText(SplashScreen.this, "No internet access!", Toast.LENGTH_SHORT).show();
                                 Handler handler = new Handler();
@@ -70,6 +70,7 @@ public class SplashScreen extends Activity {
                                     @Override
                                     public void run() {
                                         finish();
+                                        //startActivity(new Intent(SplashScreen.this, Profile.class));
                                     }
                                 }, 3200);
                             }
