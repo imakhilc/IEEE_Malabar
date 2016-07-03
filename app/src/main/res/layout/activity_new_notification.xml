@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.ieeemalabar.NewNotification">
 
     <LinearLayout
         android:layout_width="0px"
@@ -30,11 +32,11 @@
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/field_title"
+                        android:id="@+id/notif_title"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
                         android:background="#eee"
-                        android:hint="Event title"
+                        android:hint="Notification title"
                         android:maxLines="1"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
@@ -52,7 +54,7 @@
                         android:src="@drawable/login_bg"
                         android:visibility="gone" />
 
-                    <LinearLayout
+                    <!--LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="8dp"
@@ -85,7 +87,7 @@
                             android:text="Upload image"
                             android:textColor="@color/secondary_text"
                             android:textSize="16sp" />
-                    </LinearLayout>
+                    </LinearLayout-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -94,12 +96,12 @@
                         android:background="#eee">
 
                         <EditText
-                            android:id="@+id/field_body"
+                            android:id="@+id/notif_message"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:background="#eee"
-                            android:hint="Write your report..."
+                            android:hint="Write message..."
                             android:inputType="textMultiLine"
                             android:maxLines="100"
                             android:paddingBottom="16dp"
@@ -110,23 +112,6 @@
                             android:textSize="16sp" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:visibility="gone"
-                        android:layout_marginTop="8dp"
-                        android:background="#f00"
-                        android:id="@+id/del_lin"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp">
-                        <Button
-                            android:layout_margin="1dp"
-                            android:id="@+id/delete_b"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/del_button"
-                            android:text="Delete Report"
-                            android:textColor="@drawable/del_button_text" />
-                    </LinearLayout>
-
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -135,13 +120,11 @@
     </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_submit_post"
+        android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@android:id/keyboardView"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_navigation_check_24" />
-
 </RelativeLayout>

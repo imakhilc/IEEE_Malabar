@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/post_title"
+        android:textColor="#5D5D5D"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,6 +25,7 @@
 
     <TextView
         android:id="@+id/collegeView"
+        android:textColor="#B9B9B9"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

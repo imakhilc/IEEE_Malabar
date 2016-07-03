@@ -47,12 +47,12 @@ public class SignUp extends Fragment {
 
     private FirebaseAuth mAuth;
     private Toast mToastText;
-    Spinner mCollegeField;
+    Spinner mCollegeField, mPositionField;
     Button mSignUpButton;
     EditText mNameField, mEmailField, mIeeeField, mPasswordField;
     ProgressDialog pd;
     CheckBox check;
-    Boolean tick = true, college_op = false;
+    Boolean tick = true, college_op = false, position_op = false;
     private DatabaseReference mDatabase;
     private static final String TAG = "SignUp";
     private String email, password;
@@ -74,6 +74,7 @@ public class SignUp extends Fragment {
         mNameField = (EditText) getView().findViewById(R.id.fullname1);
         mEmailField = (EditText) getView().findViewById(R.id.email1);
         mCollegeField = (Spinner) getView().findViewById(R.id.college1);
+        mPositionField = (Spinner) getView().findViewById(R.id.position1);
         mIeeeField = (EditText) getView().findViewById(R.id.ieee1);
         mPasswordField = (EditText) getView().findViewById(R.id.password1);
         check = (CheckBox) getActivity().findViewById(R.id.checkBox1);
@@ -86,9 +87,13 @@ public class SignUp extends Fragment {
         mPasswordField.setTypeface(b_font);
         mSignUpButton.setTypeface(b_font);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(),
                 R.array.colleges, R.layout.college_list);
-        mCollegeField.setAdapter(adapter);
+        mCollegeField.setAdapter(adapter1);
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(getActivity(),
+                R.array.positions, R.layout.college_list);
+        mPositionField.setAdapter(adapter2);
 
         pd = new ProgressDialog(getActivity());
         pd.setCancelable(false);
@@ -138,6 +143,26 @@ public class SignUp extends Fragment {
             }
 
         });
+
+        mPositionField.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code here
+                if (position == 0)
+                    position_op = false;
+                else {
+                    EditText spinner_e1 = (EditText) getActivity().findViewById(R.id.spinner_e1);
+                    spinner_e1.setError(null);
+                    position_op = true;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
     }
 
     private void displayMessage(final String message) {
@@ -155,6 +180,7 @@ public class SignUp extends Fragment {
         if (!validateForm()) {
             return;
         }
+
         hideSoftKeyboard(getActivity());
         pd.setMessage("Creating Account");
         pd.show();
@@ -188,15 +214,17 @@ public class SignUp extends Fragment {
         String username = user.getEmail().toLowerCase();
         String name = mNameField.getText().toString().toUpperCase();
         String college = mCollegeField.getSelectedItem().toString();
+        String position = mPositionField.getSelectedItem().toString();
         String ieee = mIeeeField.getText().toString();
 
         SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("college", college);
+        editor.putString("position", position);
         editor.commit();
 
         // Write new user
-        writeNewUser(user.getUid(), username, name, college, ieee);
+        writeNewUser(user.getUid(), username, name, college, position, ieee);
 
         // Go to MainActivity
         startActivity(new Intent(getActivity(), ActivityMain.class));
@@ -221,6 +249,15 @@ public class SignUp extends Fragment {
         } else {
             EditText spinner_e = (EditText) getActivity().findViewById(R.id.spinner_e);
             spinner_e.setError(null);
+        }
+
+        if (!position_op) {
+            EditText spinner_e1 = (EditText) getActivity().findViewById(R.id.spinner_e1);
+            spinner_e1.setError("Select Your Position");
+            result = false;
+        } else {
+            EditText spinner_e1 = (EditText) getActivity().findViewById(R.id.spinner_e1);
+            spinner_e1.setError(null);
         }
 
         if (TextUtils.isEmpty(mEmailField.getText().toString()) || !isEmailValid(mEmailField.getText().toString())) {
@@ -254,8 +291,8 @@ public class SignUp extends Fragment {
         return result;
     }
 
-    private void writeNewUser(String userId, String username, String name, String college, String ieee) {
-        User user = new User(username, name, college, ieee);
+    private void writeNewUser(String userId, String username, String name, String college, String position, String ieee) {
+        User user = new User(username, name, college, position, ieee);
         mDatabase.child("users").child(userId).setValue(user);
     }
 

@@ -170,6 +170,53 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:src="@drawable/ic_position" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/etcolor">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <EditText
+                                android:editable="false"
+                                android:background="#00ffffff"
+                                android:id="@+id/spinner_e1"
+                                android:paddingRight="16dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <Spinner
+                                android:id="@+id/position1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:entries="@array/positions"
+                                android:popupBackground="@color/colorPrimary"
+                                android:prompt="@string/select" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/iccolor"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:src="@drawable/ic_member" />
                     </LinearLayout>
 

@@ -15,7 +15,7 @@
             android:id="@+id/post_author_photo"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/ic_account_square" />
+            android:src="@drawable/prof_thumb" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -23,12 +23,12 @@
 
             <TextView
                 android:id="@+id/post_author"
+                android:textColor="#5D5D5D"
                 style="@style/Base.TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
                 tools:text="someauthor@email.com" />
 
             <TextView

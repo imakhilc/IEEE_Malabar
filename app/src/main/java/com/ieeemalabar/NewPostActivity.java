@@ -78,7 +78,7 @@ public class NewPostActivity extends BaseActivity {
     Post post;
     Bitmap bmp;
     Boolean click = false;
-    String college;
+    String college, title, body;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,7 +258,7 @@ public class NewPostActivity extends BaseActivity {
                 }
             };
             mPostReference.addValueEventListener(mPostListener);
-        }else {
+        } else {
             setTitle("Add New Report");
         }
 
@@ -300,8 +300,10 @@ public class NewPostActivity extends BaseActivity {
     private void editPost() {
         //Toast.makeText(NewPostActivity.this, "Editing!", Toast.LENGTH_SHORT).show();
 
-        final String title = mTitleField.getText().toString().trim();
-        final String body = mBodyField.getText().toString().trim();
+        mTitleField = (EditText) findViewById(R.id.field_title);
+        mBodyField = (EditText) findViewById(R.id.field_body);
+        title = mTitleField.getText().toString().trim();
+        body = mBodyField.getText().toString().trim();
 
         //hide keyboard
         hideSoftKeyboard(this);
@@ -351,8 +353,8 @@ public class NewPostActivity extends BaseActivity {
     }
 
     private void submitPost() {
-        final String title = mTitleField.getText().toString().trim();
-        final String body = mBodyField.getText().toString().trim();
+        title = mTitleField.getText().toString().trim();
+        body = mBodyField.getText().toString().trim();
         TextView pic_name = (TextView) findViewById(R.id.pic_name);
 
         // Title is required
@@ -507,13 +509,6 @@ public class NewPostActivity extends BaseActivity {
         }
     }
 
-    // [END write_fan_out]
-    @Override
-    public void onBackPressed() {
-        //startActivity(new Intent(getApplicationContext(), MainContainer.class));
-        finish();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -628,8 +623,44 @@ public class NewPostActivity extends BaseActivity {
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
-        return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        title = mTitleField.getText().toString().trim();
+        body = mBodyField.getText().toString().trim();
+
+        if (!TextUtils.isEmpty(title) || !TextUtils.isEmpty(body)) {
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            finish();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to cancel?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+        } else {
+            finish();
+        }
     }
 }

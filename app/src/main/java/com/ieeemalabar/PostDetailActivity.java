@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -95,13 +96,7 @@ public class PostDetailActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         // Get post key from intent
-        mPostKey =
-
-                getIntent()
-
-                        .
-
-                                getStringExtra(EXTRA_POST_KEY);
+        mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
 
         if (mPostKey == null)
 
@@ -152,35 +147,21 @@ public class PostDetailActivity extends BaseActivity {
         imageRef = mStorageRef.child("featured/" + mPostKey + ".jpg");
 
         // Initialize Views
-        mAuthorView = (TextView)
+        mAuthorView = (TextView) findViewById(R.id.post_author);
 
-                findViewById(R.id.post_author);
-
-        mDateView = (TextView)
-
-                findViewById(R.id.post_date);
+        mDateView = (TextView) findViewById(R.id.post_date);
 
         mCollegeView = (TextView) findViewById(R.id.collegeView);
 
-        mTitleView = (TextView)
+        mTitleView = (TextView) findViewById(R.id.post_title);
 
-                findViewById(R.id.post_title);
+        mBodyView = (TextView) findViewById(R.id.post_body);
 
-        mBodyView = (TextView)
+        mFeatured = (ImageView) findViewById(R.id.feature);
 
-                findViewById(R.id.post_body);
+        mCommentField = (EditText) findViewById(R.id.field_comment_text);
 
-        mFeatured = (ImageView)
-
-                findViewById(R.id.feature);
-
-        mCommentField = (EditText)
-
-                findViewById(R.id.field_comment_text);
-
-        mCommentsRecycler = (RecyclerView)
-
-                findViewById(R.id.recycler_comments);
+        mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
 
         mCommentsRecycler.setNestedScrollingEnabled(false);
 

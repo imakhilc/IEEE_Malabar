@@ -40,6 +40,19 @@
         <item>GEC, Vadakara</item>
     </string-array>
 
+    <string-array name="positions">
+        <item>SB Position</item>
+        <item>Chairman</item>
+        <item>Vice Chairman</item>
+        <item>Secretary</item>
+        <item>WIE Chairman</item>
+        <item>Member Coordinator</item>
+        <item>Treasurer</item>
+        <item>Webmaster</item>
+        <item>Other</item>
+        <item>Non-execom Member</item>
+    </string-array>
+
     <string-array name="events">
         <item>All Events</item>
         <item>My Student Branch</item>

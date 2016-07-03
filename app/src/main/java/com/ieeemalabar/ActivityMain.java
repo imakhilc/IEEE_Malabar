@@ -2,6 +2,7 @@ package com.ieeemalabar;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ieeemalabar.fragment.RecentEventsFragment;
 import com.ieeemalabar.fragment.SBEventsFragment;
 import com.ieeemalabar.fragment.SignIn;
@@ -42,6 +46,9 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_activity_main);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("test");
+        FirebaseInstanceId.getInstance().getToken();
 
         AM = this;
         loadFirebase();
@@ -102,13 +109,19 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        //Button launches NewPostActivity
-        findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
-            }
-        });
+        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+        String position = settings.getString("position", "");
+        if (position.equals("Chairman") || position.equals("Vice Chairman")) {
+            //Button launches NewPostActivity
+            findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
+                }
+            });
+        } else {
+            findViewById(R.id.fab_new_post).setVisibility(View.GONE);
+        }
 
     }
 
@@ -155,15 +168,33 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_logout:
-                SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("user", "");
-                editor.putString("pass", "");
-                editor.commit();
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("user", "");
+                                editor.putString("pass", "");
+                                editor.commit();
 
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                finish();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Do you really want to log out?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
                 return true;
             case R.id.profile:
                 startActivity(new Intent(this, Profile.class));

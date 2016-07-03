@@ -10,117 +10,178 @@
     android:weightSum="100"
     tools:context="com.ieeemalabar.Profile">
 
-    <ImageView
-        android:id="@+id/backimg"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:adjustViewBounds="false"
-        android:scaleType="centerCrop"
-        android:src="@drawable/login_bg" />
-
     <LinearLayout
+        android:id="@+id/level"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/backimg"
-        android:layout_alignTop="@+id/backimg"
-        android:background="@drawable/white_grad" />
-
-    <RelativeLayout
-        android:id="@+id/basic_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp">
-
-        <LinearLayout
-            android:id="@+id/level"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="vertical" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/level"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                card_view:cardUseCompatPadding="true">
-
-                <RelativeLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:id="@+id/name_align"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"/>
-
-                    <TextView
-                        android:id="@+id/username"
-                        android:layout_below="@+id/name_align"
-                        android:textColor="#161616"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="center"
-                        android:text="AKHIL C"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:id="@+id/college"
-                        android:textColor="#B6B6B6"
-                        android:layout_below="@+id/username"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginBottom="20dp"
-                        android:text="COLLEGE OF ENGINEERING TRIKARIPUR"
-                        android:textSize="15sp" />
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/prof_pic"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
             android:background="@drawable/button_circle">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="5dp"
                 android:src="@drawable/prof_pic" />
 
         </LinearLayout>
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/basic_details"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp">
-
-        <android.support.v7.widget.CardView
+        <TextView
+            android:id="@+id/prof_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:cardUseCompatPadding="true">
+            android:layout_below="@+id/prof_pic"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="AKHIL C"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/prof_college"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/prof_name"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="COLLEGE OF ENGINEERING TRIKARIPUR"
+            android:textColor="#aaffffff"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/level"
+        android:background="#fff">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:textSize="10sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="EMAIL"
+                android:textColor="#C0C0C0" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"></LinearLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textSize="20sp"
+                    android:id="@+id/mail_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="icon" />
+
+                <TextView
+                    android:id="@+id/prof_mail"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center"
+                    android:paddingLeft="10dp"
+                    android:text="imakhilc@gmail.com"
+                    android:textColor="#666"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="20dp"
+                android:background="#C0C0C0" />
+
+            <TextView
+            android:textSize="10sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PHONE"
+            android:textColor="#C0C0C0" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textSize="20sp"
+                    android:id="@+id/phone_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="icon" />
+
+                <TextView
+                    android:id="@+id/prof_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center"
+                    android:paddingLeft="10dp"
+                    android:text="+91 8281719809"
+                    android:textColor="#666"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="20dp"
+                android:background="#C0C0C0" />
+
+            <TextView
+                android:textSize="10sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PLACE"
+                android:textColor="#C0C0C0" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textSize="20sp"
+                    android:id="@+id/place_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="icon" />
+
+                <TextView
+                    android:id="@+id/prof_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center"
+                    android:paddingLeft="10dp"
+                    android:text="Cherukunnu"
+                    android:textColor="#666"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C0C0C0" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

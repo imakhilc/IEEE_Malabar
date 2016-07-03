@@ -12,7 +12,7 @@
         android:layout_height="32dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_account_square"/>
+        android:src="@drawable/prof_thumb"/>
 
     <LinearLayout
         android:layout_width="match_parent"
