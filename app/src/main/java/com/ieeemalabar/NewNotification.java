@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ieeemalabar.models.Notification;
@@ -102,8 +103,9 @@ public class NewNotification extends AppCompatActivity {
 
     public void send(String title) {
         super.onStart();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         BackTask bt = new BackTask();
-        bt.execute("http://ieee-malabar.rhcloud.com/notification.php?message=" + title.replaceAll(" ", "_"));
+        bt.execute("http://ieee-malabar.rhcloud.com/notification.php?message=" + title.replaceAll(" ", "_") + "&uid=" + uid);
     }
 
     private class BackTask extends AsyncTask<String, Integer, Void> {
