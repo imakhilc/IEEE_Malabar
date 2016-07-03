@@ -17,6 +17,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -60,9 +64,7 @@ public class SplashScreen extends Activity {
                             Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
                             //pd.hide();
                             if (task.isSuccessful()) {
-                                startActivity(new Intent(SplashScreen.this, ActivityMain.class));
-                                //Toast.makeText(SplashScreen.this, password, Toast.LENGTH_SHORT).show();
-                                finish();
+                                getHub();
                             }else {
                                 Toast.makeText(SplashScreen.this, "No internet access!", Toast.LENGTH_SHORT).show();
                                 Handler handler = new Handler();
@@ -70,9 +72,8 @@ public class SplashScreen extends Activity {
                                     @Override
                                     public void run() {
                                         finish();
-                                        //startActivity(new Intent(SplashScreen.this, Profile.class));
                                     }
-                                }, 3200);
+                                }, 2000);
                             }
                         }
                     });
@@ -81,7 +82,7 @@ public class SplashScreen extends Activity {
                     //finish();
                 }
             }
-        }, 3200);
+        }, 2000);
     }
 
     public static boolean isEmailValid(String email) {
@@ -96,5 +97,30 @@ public class SplashScreen extends Activity {
             isValid = true;
         }
         return isValid;
+    }
+
+    public void getHub(){
+        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("hubmember")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        String hubmember = "";
+                        hubmember = dataSnapshot.getValue().toString();
+                        if(hubmember != "") {
+                            SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("hubmember", hubmember);
+                            editor.commit();
+
+                            startActivity(new Intent(SplashScreen.this, ActivityMain.class));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 }

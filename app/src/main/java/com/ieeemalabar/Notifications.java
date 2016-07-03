@@ -1,6 +1,7 @@
 package com.ieeemalabar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,12 +43,20 @@ public class Notifications extends AppCompatActivity {
 
         loadFirebase();
 
-        findViewById(R.id.new_notification).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Notifications.this, NewNotification.class));
-            }
-        });
+        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+        String hubmember = settings.getString("hubmember", "");
+        if (hubmember.equals("true")) {
+            //Button launches NewNotificationActivity
+            findViewById(R.id.new_notification).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Notifications.this, NewNotification.class));
+                }
+            });
+        } else {
+            findViewById(R.id.new_notification).setVisibility(View.GONE);
+        }
+
 
         myRecycler = (RecyclerView) findViewById(R.id.mRecycler);
         myRecycler.setNestedScrollingEnabled(false);

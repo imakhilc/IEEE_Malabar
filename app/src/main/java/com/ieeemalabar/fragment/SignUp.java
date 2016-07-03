@@ -221,10 +221,11 @@ public class SignUp extends Fragment {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("college", college);
         editor.putString("position", position);
+        editor.putString("hubmember", "false");
         editor.commit();
 
         // Write new user
-        writeNewUser(user.getUid(), username, name, college, position, ieee);
+        writeNewUser(user.getUid(), username, name, college, position, ieee, "false");
 
         // Go to MainActivity
         startActivity(new Intent(getActivity(), ActivityMain.class));
@@ -291,8 +292,8 @@ public class SignUp extends Fragment {
         return result;
     }
 
-    private void writeNewUser(String userId, String username, String name, String college, String position, String ieee) {
-        User user = new User(username, name, college, position, ieee);
+    private void writeNewUser(String userId, String username, String name, String college, String position, String ieee, String hubmember) {
+        User user = new User(username, name, college, position, ieee, hubmember);
         mDatabase.child("users").child(userId).setValue(user);
     }
 

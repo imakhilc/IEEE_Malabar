@@ -253,6 +253,31 @@ public class SignIn extends Fragment {
                             editor.putString("position", position);
                             editor.commit();
 
+                            getHub();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    public void getHub(){
+        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("hubmember")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user information
+                        String hubmember = "";
+                        hubmember = dataSnapshot.getValue().toString();
+                        if(hubmember != "") {
+                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putString("hubmember", hubmember);
+                            editor.commit();
+
                             //Toast.makeText(getActivity(), position, Toast.LENGTH_SHORT).show();
                             displayMessage("Login success");
                             startActivity(new Intent(getActivity(), ActivityMain.class));
