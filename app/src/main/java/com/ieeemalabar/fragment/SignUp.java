@@ -219,6 +219,7 @@ public class SignUp extends Fragment {
 
         SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
+        editor.putString("name", name);
         editor.putString("college", college);
         editor.putString("position", position);
         editor.putString("hubmember", "false");

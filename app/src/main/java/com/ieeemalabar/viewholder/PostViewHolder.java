@@ -41,10 +41,12 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     public ImageView feature;
     public RelativeLayout post_edit;
 
-    public StorageReference imageRef;
-    public FirebaseStorage mStorage;
     public StorageReference mStorageRef;
+    private FirebaseStorage mStorage;
     public Bitmap bmp;
+    StorageReference profRef;
+    StorageReference featRef;
+    public static boolean setImage = true;
 
     public PostViewHolder(View itemView) {
         super(itemView);
@@ -61,6 +63,13 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToPost(Post post, View.OnClickListener starClickListener) {
+
+        mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
+        ImageView prof_pic = (ImageView) itemView.findViewById(R.id.post_author_photo);
+        prof_pic.setImageResource(R.drawable.prof_pic);
+        loadProfPic(post.uid);
+
         titleView.setText(post.title.substring(0,1).toUpperCase() + post.title.substring(1));
         authorView.setText(post.author);
         dateView.setText(post.date);
@@ -70,28 +79,25 @@ public class PostViewHolder extends RecyclerView.ViewHolder {
         s = s.replaceAll("[\\t\\n\\r]", " ");
         bodyView.setText(s + "...");
         feature.setVisibility(View.GONE);
+        starView.setOnClickListener(starClickListener);
+    }
 
-        /*mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
-
-        imageRef = mStorageRef.child("featured/" + PostListFragment.subPostKey + ".jpg");
-
+    public  void loadProfPic(String uid){
         final long ONE_MEGABYTE = 1024 * 1024;
-        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        profRef = mStorageRef.child("profile/" + uid + ".jpg");
+        profRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                //Toast.makeText(PostDetailActivity.this, "Invalid Name", Toast.LENGTH_SHORT).show()
                 bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                feature.setImageBitmap(bmp);
-                feature.setVisibility(View.VISIBLE);
+                ImageView prof_pic = (ImageView) itemView.findViewById(R.id.post_author_photo);
+                prof_pic.setImageBitmap(bmp);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
+                ImageView prof_pic = (ImageView) itemView.findViewById(R.id.post_author_photo);
+                prof_pic.setImageResource(R.drawable.prof_thumb);
             }
-        });*/
-
-        starView.setOnClickListener(starClickListener);
+        });
     }
 }

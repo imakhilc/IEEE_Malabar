@@ -36,7 +36,7 @@ public abstract class PostListFragment extends Fragment {
 
     private DatabaseReference mDatabase;
 
-    private FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
+    public static FirebaseRecyclerAdapter<Post, PostViewHolder> mAdapter;
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
     public static String subPostKey;
@@ -101,22 +101,25 @@ public abstract class PostListFragment extends Fragment {
                 viewHolder.bindToPost(model, new View.OnClickListener() {
                     @Override
                     public void onClick(View starView) {
-                        // Neeed to write to both places the post is stored
-                        //SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                        //String college = settings.getString("college", "");
+                        PostViewHolder.setImage = false;
                         String college = viewHolder.collegeView.getText().toString();
 
                         DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
                         DatabaseReference userPostRef = mDatabase.child("user-posts").child(college).child(postRef.getKey());
+                        DatabaseReference hubPostRef = mDatabase.child("hub-posts").child(postRef.getKey());
 
                         //Run two transactions
                         onStarClicked(globalPostRef);
                         onStarClicked(userPostRef);
+                        onStarClicked(hubPostRef);
                     }
                 });
             }
         };
         mRecycler.setAdapter(mAdapter);
+
+        mRecycler.setNestedScrollingEnabled(false);
+        mRecycler.setHasFixedSize(true);
     }
 
     // START post_stars

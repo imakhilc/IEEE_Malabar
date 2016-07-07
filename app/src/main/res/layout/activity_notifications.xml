@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="none"
     tools:context="com.ieeemalabar.Notifications">
 
     <ProgressBar
@@ -12,19 +13,14 @@
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mRecycler"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
             tools:listitem="@layout/item_notifications">
-
         </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_notification"
@@ -32,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="10dp"
         android:src="@drawable/ic_image_edit" />
 
 </RelativeLayout>

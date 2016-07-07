@@ -190,7 +190,9 @@ public class NewNotification extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to cancel?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+                    .setNegativeButton("No", dialogClickListener)
+                    .setTitle("Cancel Notification")
+                    .show();
         } else {
             finish();
         }

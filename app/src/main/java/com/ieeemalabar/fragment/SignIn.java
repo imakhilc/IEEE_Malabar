@@ -33,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ieeemalabar.ActivityMain;
 import com.ieeemalabar.R;
+import com.ieeemalabar.models.User;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -185,7 +186,7 @@ public class SignIn extends Fragment {
                             editor.putString("pass", password);
                             editor.commit();
 
-                            getCollege();
+                            getUserDetails();
                         } else {
                             displayMessage("Login Failed");
                             pd.hide();
@@ -213,77 +214,27 @@ public class SignIn extends Fragment {
         return result;
     }
 
-    public void getCollege(){
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("college")
+    public void getUserDetails(){
+
+        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference().child("users").child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user information
-                        String college = "";
-                        college = dataSnapshot.getValue().toString();
-                        if(college != "") {
-                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("college", college);
-                            editor.commit();
+                        User user = dataSnapshot.getValue(User.class);
 
-                            //Toast.makeText(getActivity(), college, Toast.LENGTH_SHORT).show();
-                            getPosition();
-                        }
-                    }
+                        SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("name", user.name);
+                        editor.putString("college", user.college);
+                        editor.putString("hubmember", user.hubmember);
+                        editor.putString("position", user.position);
+                        editor.commit();
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-    }
-
-    public void getPosition(){
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("position")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user information
-                        String position = "";
-                        position = dataSnapshot.getValue().toString();
-                        if(position != "") {
-                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("position", position);
-                            editor.commit();
-
-                            getHub();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    public void getHub(){
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("hubmember")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user information
-                        String hubmember = "";
-                        hubmember = dataSnapshot.getValue().toString();
-                        if(hubmember != "") {
-                            SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("hubmember", hubmember);
-                            editor.commit();
-
-                            //Toast.makeText(getActivity(), position, Toast.LENGTH_SHORT).show();
-                            displayMessage("Login success");
-                            startActivity(new Intent(getActivity(), ActivityMain.class));
-                            getActivity().finish();
-                            pd.hide();
-                        }
+                        startActivity(new Intent(getActivity(), ActivityMain.class));
+                        getActivity().finish();
                     }
 
                     @Override

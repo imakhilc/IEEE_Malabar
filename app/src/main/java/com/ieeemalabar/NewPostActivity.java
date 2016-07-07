@@ -70,15 +70,14 @@ public class NewPostActivity extends BaseActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
     final int PIC_CROP = 2;
     Uri selectedImage;
-    private String condition = "";
-
-    private String mPostKey = "";
+    private String condition = "", mPostKey = "";
+    private String SBorH, editCollege;
     private DatabaseReference mPostReference;
     private ValueEventListener mPostListener;
     Post post;
     Bitmap bmp;
     Boolean click = false;
-    String college, title, body;
+    String college, title, body, cancelText = "Cancel Report";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +96,12 @@ public class NewPostActivity extends BaseActivity {
         if (extras != null) {
             condition = extras.getString("condition");
             mPostKey = extras.getString("post_key");
+            SBorH = extras.getString("SBorH");
+            editCollege = extras.getString("college");
         }
 
-        if (condition != "") {
+        if (condition.equals("edit")) {
+            cancelText = "Cancel Changes";
             //LinearLayout del_lin = (LinearLayout) findViewById(R.id.del_lin);
             //del_lin.setVisibility(View.VISIBLE);
 
@@ -230,7 +232,7 @@ public class NewPostActivity extends BaseActivity {
                         });*/
 
                         // [END_EXCLUDE]
-                        final long ONE_MEGABYTE = 1024 * 1024;
+                        /*final long ONE_MEGABYTE = 1024 * 1024;
                         imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                             @Override
                             public void onSuccess(byte[] bytes) {
@@ -246,20 +248,23 @@ public class NewPostActivity extends BaseActivity {
                             public void onFailure(@NonNull Exception exception) {
                                 // Handle any errors
                             }
-                        });
+                        });*/
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    Toast.makeText(NewPostActivity.this, "Failed to load post.",
+                    Toast.makeText(NewPostActivity.this, "Failed to load report.",
                             Toast.LENGTH_SHORT).show();
                 }
             };
             mPostReference.addValueEventListener(mPostListener);
         } else {
-            setTitle("Add New Report");
+            if(SBorH.equals("sbevent"))
+                setTitle("SB Event Report");
+            else if(SBorH.equals("hubevent"))
+                setTitle("Hub Event Report");
         }
 
         pd = new ProgressDialog(this);
@@ -289,7 +294,7 @@ public class NewPostActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(NewPostActivity.this, condition, Toast.LENGTH_SHORT).show();
-                if (condition != "")
+                if (condition.equals("edit"))
                     editPost();
                 else
                     submitPost();
@@ -336,7 +341,7 @@ public class NewPostActivity extends BaseActivity {
                             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                             String date = df.format(c.getTime());
 
-                            editThisPost(title, body, user.college);
+                            editThisPost(title, body, editCollege);
 
                             //Finish this Activity, back to the stream
                             //startActivity(new Intent(getApplicationContext(), MainContainer.class));
@@ -405,11 +410,10 @@ public class NewPostActivity extends BaseActivity {
 
                             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
                             String date = df.format(c.getTime());
-                            writeNewPost(userId, user.name, title, body, date, user.college);
-
-                            //Finish this Activity, back to the stream
-                            //startActivity(new Intent(getApplicationContext(), MainContainer.class));
-                            //finish();
+                            if (SBorH.equals("sbevent"))
+                                writeNewPost(userId, user.name, title, body, date, user.college);
+                            else if (SBorH.equals("hubevent"))
+                                writeNewPost(userId, user.name, title, body, date, "HUB EVENT");
                         }
                     }
 
@@ -432,7 +436,10 @@ public class NewPostActivity extends BaseActivity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/posts/" + key, postValues);
-        childUpdates.put("/user-posts/" + college + "/" + key, postValues);
+        if(SBorH.equals("sbevent"))
+            childUpdates.put("/user-posts/" + college + "/" + key, postValues);
+        else if(SBorH.equals("hubevent"))
+            childUpdates.put("/hub-posts/" + key, postValues);
         childUpdates.remove("");
 
         mDatabase.updateChildren(childUpdates);
@@ -472,8 +479,13 @@ public class NewPostActivity extends BaseActivity {
         mDatabase.child("posts").child(mPostKey).child("title").setValue(title);
         mDatabase.child("posts").child(mPostKey).child("body").setValue(body);
 
-        mDatabase.child("user-posts").child(college).child(mPostKey).child("title").setValue(title);
-        mDatabase.child("user-posts").child(college).child(mPostKey).child("body").setValue(body);
+        if(college.equals("HUB EVENT")) {
+            mDatabase.child("hub-posts").child(mPostKey).child("title").setValue(title);
+            mDatabase.child("hub-posts").child(mPostKey).child("body").setValue(body);
+        } else {
+            mDatabase.child("user-posts").child(college).child(mPostKey).child("title").setValue(title);
+            mDatabase.child("user-posts").child(college).child(mPostKey).child("body").setValue(body);
+        }
 
 
         if (image_selected) {
@@ -658,7 +670,9 @@ public class NewPostActivity extends BaseActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to cancel?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+                    .setNegativeButton("No", dialogClickListener)
+                    .setTitle(cancelText)
+                    .show();
         } else {
             finish();
         }

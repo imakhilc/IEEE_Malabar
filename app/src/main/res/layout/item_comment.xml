@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:layout_marginTop="5dp"
+    android:id="@+id/commentLayout"
+    android:layout_marginBottom="3dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,37 +9,35 @@
     
     <ImageView
         android:id="@+id/comment_photo"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_marginTop="3dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/prof_thumb"/>
+        android:src="@drawable/prof_pic"/>
 
     <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/comment_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:layout_toRightOf="@+id/comment_photo">
+        android:paddingBottom="5dp">
 
         <TextView
             android:id="@+id/comment_author"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             tools:text="John Doe" />
 
         <TextView
-            android:layout_marginTop="4dp"
+            android:textSize="13dp"
             android:id="@+id/comment_body"
             style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="This is the comment text.."/>
-
     </LinearLayout>
-
 </RelativeLayout>

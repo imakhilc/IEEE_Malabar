@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -79,7 +80,9 @@ public class PostDetailActivity extends BaseActivity {
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
     StorageReference imageRef;
+    StorageReference profRef;
     public static Bitmap bmp;
+    public static Bitmap profBmp;
     Post post;
     String userId;
     public static String title;
@@ -98,48 +101,21 @@ public class PostDetailActivity extends BaseActivity {
         // Get post key from intent
         mPostKey = getIntent().getStringExtra(EXTRA_POST_KEY);
 
-        if (mPostKey == null)
-
-        {
+        if (mPostKey == null) {
             throw new IllegalArgumentException("Must pass EXTRA_POST_KEY");
         }
 
-        userId =
-
-                getUid();
+        userId = getUid();
         //Toast toast = Toast.makeText(PostDetailActivity.this, userId, Toast.LENGTH_SHORT);
         //toast.show();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getSupportActionBar().setElevation(0);
         }
 
         // Initialize Database
-        mPostReference = FirebaseDatabase.getInstance().
-
-                getReference()
-
-                .
-
-                        child("posts")
-
-                .
-
-                        child(mPostKey);
-
-        mCommentsReference = FirebaseDatabase.getInstance().
-
-                getReference()
-
-                .
-
-                        child("post-comments")
-
-                .
-
-                        child(mPostKey);
+        mPostReference = FirebaseDatabase.getInstance().getReference().child("posts").child(mPostKey);
+        mCommentsReference = FirebaseDatabase.getInstance().getReference().child("post-comments").child(mPostKey);
 
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
@@ -148,26 +124,15 @@ public class PostDetailActivity extends BaseActivity {
 
         // Initialize Views
         mAuthorView = (TextView) findViewById(R.id.post_author);
-
         mDateView = (TextView) findViewById(R.id.post_date);
-
         mCollegeView = (TextView) findViewById(R.id.collegeView);
-
         mTitleView = (TextView) findViewById(R.id.post_title);
-
         mBodyView = (TextView) findViewById(R.id.post_body);
-
         mFeatured = (ImageView) findViewById(R.id.feature);
-
         mCommentField = (EditText) findViewById(R.id.field_comment_text);
-
         mCommentsRecycler = (RecyclerView) findViewById(R.id.recycler_comments);
-
         mCommentsRecycler.setNestedScrollingEnabled(false);
-
-        mCommentField.setOnTouchListener(new View.OnTouchListener()
-
-                                         {
+        mCommentField.setOnTouchListener(new View.OnTouchListener() {
                                              @Override
                                              public boolean onTouch(View v, MotionEvent event) {
                                                  if (v.getId() == R.id.field_comment_text) {
@@ -184,10 +149,7 @@ public class PostDetailActivity extends BaseActivity {
 
         );
         ScrollView scroll = (ScrollView) findViewById(R.id.post_details_scroll);
-        scroll.setOnTouchListener(new View.OnTouchListener()
-
-                                  {
-
+        scroll.setOnTouchListener(new View.OnTouchListener() {
                                       @Override
                                       public boolean onTouch(View v, MotionEvent event) {
                                           if (mCommentField.hasFocus()) {
@@ -199,56 +161,42 @@ public class PostDetailActivity extends BaseActivity {
 
         );
 
-        mCommentField.addTextChangedListener(new
+        mCommentField.addTextChangedListener(new TextWatcher() {
+                                                 @Override
+                                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                                 }
 
-                                                     TextWatcher() {
-
-                                                         @Override
-                                                         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                                         }
-
-                                                         @Override
-                                                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                                                             if (s.toString().trim().length() == 0) {
-                                                                 findViewById(R.id.sybmit_comment).setVisibility(View.GONE);
-                                                             } else {
-                                                                 findViewById(R.id.sybmit_comment).setVisibility(View.VISIBLE);
-                                                             }
-
-
-                                                         }
-
-                                                         @Override
-                                                         public void afterTextChanged(Editable s) {
-
-                                                         }
+                                                 @Override
+                                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                                     if (s.toString().trim().length() == 0) {
+                                                         findViewById(R.id.submit_comment).setVisibility(View.GONE);
+                                                     } else {
+                                                         findViewById(R.id.submit_comment).setVisibility(View.VISIBLE);
                                                      }
+                                                 }
+
+                                                 @Override
+                                                 public void afterTextChanged(Editable s) {
+                                                 }
+                                             }
 
         );
 
-        findViewById(R.id.sybmit_comment)
+        findViewById(R.id.submit_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String commentText = mCommentField.getText().toString().trim();
+                if (commentText.length() > 0)
+                    postComment();
+            }
+        });
 
-                .
-
-                        setOnClickListener(new View.OnClickListener() {
-                                               @Override
-                                               public void onClick(View v) {
-                                                   String commentText = mCommentField.getText().toString().trim();
-                                                   if (commentText.length() > 0)
-                                                       postComment();
-                                               }
-                                           }
-
-                        );
-
-        mCommentsRecycler.setLayoutManager(new
-
-                        LinearLayoutManager(this)
-
-        );
-
+        LinearLayoutManager mManager;
+        mManager = new LinearLayoutManager(this);
+        mManager.setReverseLayout(true);
+        mManager.setStackFromEnd(true);
+        mCommentsRecycler.setLayoutManager(mManager);
+        //mCommentsRecycler.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -271,6 +219,8 @@ public class PostDetailActivity extends BaseActivity {
                 mBodyView.setText(post.body);
                 // [END_EXCLUDE]
 
+                loadProfileImage(post.uid);
+
                 if (userId.equals(post.uid)) {
                     RelativeLayout post_edit = (RelativeLayout) findViewById(R.id.post_edit);
                     post_edit.setVisibility(View.VISIBLE);
@@ -281,6 +231,7 @@ public class PostDetailActivity extends BaseActivity {
                             Intent intent = new Intent(PostDetailActivity.this, NewPostActivity.class);
                             intent.putExtra("condition", "edit");
                             intent.putExtra("post_key", mPostKey);
+                            intent.putExtra("college", post.college);
                             startActivity(intent);
                         }
                     });
@@ -369,19 +320,23 @@ public class PostDetailActivity extends BaseActivity {
                 });
     }
 
-    private static class CommentViewHolder extends RecyclerView.ViewHolder {
+    private class CommentViewHolder extends RecyclerView.ViewHolder {
 
         public TextView authorView;
         public TextView bodyView;
+        public ImageView comment_photo;
+        public RelativeLayout commentLayout;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
             authorView = (TextView) itemView.findViewById(R.id.comment_author);
             bodyView = (TextView) itemView.findViewById(R.id.comment_body);
+            comment_photo = (ImageView) itemView.findViewById(R.id.comment_photo);
+            commentLayout = (RelativeLayout) itemView.findViewById(R.id.commentLayout);
         }
     }
 
-    private static class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
+    private class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
 
         private Context mContext;
         private DatabaseReference mDatabaseReference;
@@ -389,6 +344,12 @@ public class PostDetailActivity extends BaseActivity {
 
         private List<String> mCommentIds = new ArrayList<>();
         private List<Comment> mComments = new ArrayList<>();
+
+        public StorageReference mStorageRef;
+        private FirebaseStorage mStorage;
+        StorageReference profRef;
+        ImageView profile;
+        RelativeLayout CLayout;
 
         public CommentAdapter(final Context context, DatabaseReference ref) {
             mContext = context;
@@ -400,10 +361,8 @@ public class PostDetailActivity extends BaseActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                     Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-
                     // A new comment has been added, add it to the displayed list
                     Comment comment = dataSnapshot.getValue(Comment.class);
-
                     // [START_EXCLUDE]
                     // Update RecyclerView
                     mCommentIds.add(dataSnapshot.getKey());
@@ -489,10 +448,42 @@ public class PostDetailActivity extends BaseActivity {
         }
 
         @Override
-        public void onBindViewHolder(CommentViewHolder holder, int position) {
-            Comment comment = mComments.get(position);
+        public void onBindViewHolder(final CommentViewHolder holder, int position) {
+            final Comment comment = mComments.get(position);
             holder.authorView.setText(comment.author);
             holder.bodyView.setText(comment.text);
+
+            mStorage = FirebaseStorage.getInstance();
+            mStorageRef = mStorage.getReferenceFromUrl("gs://project-3576505284407387518.appspot.com/");
+            profRef = mStorageRef.child("profile/" + comment.uid + ".jpg");
+            final long ONE_MEGABYTE = 1024 * 1024;
+            profRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Bitmap CommentBmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    holder.comment_photo.setImageBitmap(CommentBmp);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    holder.comment_photo.setImageResource(R.drawable.prof_thumb);
+                }
+            });
+
+            holder.commentLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PostDetailActivity.this, Profile.class);
+                    if (comment.uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        intent.putExtra("message", "me");
+                    } else {
+                        intent.putExtra("message", "comment");
+                    }
+                    intent.putExtra("name", comment.author);
+                    intent.putExtra("uid", comment.uid);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -517,5 +508,64 @@ public class PostDetailActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return true;
+    }
+
+    public void loadProfileImage(String uid) {
+        final long ONE_MEGABYTE = 1024 * 1024;
+        profRef = mStorageRef.child("profile/" + uid + ".jpg");
+        profRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                //Toast.makeText(PostDetailActivity.this, "Invalid Name", Toast.LENGTH_SHORT).show()
+                profBmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                ImageView prof_pic = (ImageView) findViewById(R.id.post_author_photo);
+                prof_pic.setImageBitmap(profBmp);
+
+                LinearLayout user = (LinearLayout) findViewById(R.id.user);
+                user.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(PostDetailActivity.this, Profile.class);
+
+                        if (post.uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            intent.putExtra("message", "me");
+                        } else {
+                            intent.putExtra("message", "details");
+                        }
+
+                        intent.putExtra("name", post.author);
+                        intent.putExtra("college", post.college);
+                        intent.putExtra("uid", post.uid);
+                        startActivity(intent);
+                    }
+                });
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+
+                ImageView prof_pic = (ImageView) findViewById(R.id.post_author_photo);
+                prof_pic.setImageResource(R.drawable.prof_thumb);
+
+                LinearLayout user = (LinearLayout) findViewById(R.id.user);
+                user.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(PostDetailActivity.this, Profile.class);
+
+                        if (post.uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            intent.putExtra("message", "me");
+                        } else {
+                            intent.putExtra("message", "message");
+                        }
+                        intent.putExtra("name", post.author);
+                        intent.putExtra("college", post.college);
+                        intent.putExtra("uid", post.uid);
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
     }
 }

@@ -4,8 +4,9 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#f5f5f5"
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    android:background="#fff"
     android:orientation="vertical"
     android:weightSum="100"
     tools:context="com.ieeemalabar.Profile">
@@ -22,13 +23,51 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:background="@drawable/button_circle">
+            android:layout_marginTop="20dp"
+            android:background="#fff">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:src="@drawable/prof_pic" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/profil_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/prof_pic" />
+
+                <ImageView
+                    android:id="@+id/profil_thumb"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/prof_thumb" />
+
+                <ProgressBar
+                    android:id="@+id/profPB"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true" />
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/edit"
+                    android:background="@color/colorPrimary"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_menu_edit"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp" />
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -39,149 +78,130 @@
             android:layout_below="@+id/prof_pic"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="AKHIL C"
+            android:text="NAME"
             android:textColor="#fff"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/prof_college"
+            android:textAllCaps="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/prof_name"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="COLLEGE OF ENGINEERING TRIKARIPUR"
-            android:textColor="#aaffffff"
-            android:textSize="15sp" />
+            android:text="COLLEGE OF ENGINEERING"
+            android:textColor="#ccffffff"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/level"
         android:background="#fff">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <TextView
-                android:textSize="10sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="EMAIL"
-                android:textColor="#C0C0C0" />
+            android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/userDetail"
+                android:visibility="invisible"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:textSize="20sp"
-                    android:id="@+id/mail_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:gravity="center"
-                    android:text="icon" />
-
-                <TextView
-                    android:id="@+id/prof_mail"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:paddingLeft="10dp"
-                    android:text="imakhilc@gmail.com"
-                    android:textColor="#666"
-                    android:textSize="18sp" />
+                    android:layout_height="wrap_content"
+                    android:text="SB POSITION"
+                    android:textColor="#C0C0C0"
+                    android:textSize="10sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/position_icon"
+                        android:textColor="#888"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:text="i"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/prof_position"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left|center"
+                        android:paddingLeft="10dp"
+                        android:text="Position"
+                        android:textColor="#999"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="#C0C0C0" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="CONTACT EMAIL"
+                    android:textColor="#C0C0C0"
+                    android:textSize="10sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/mail_icon"
+                        android:textColor="#888"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:text="i"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/prof_mail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left|center"
+                        android:paddingLeft="10dp"
+                        android:text="my@mail.com"
+                        android:textColor="#999"
+                        android:textSize="18sp" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
+                android:layout_below="@+id/userDetail"
+                android:background="@color/colorPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="20dp"
-                android:background="#C0C0C0" />
+                android:layout_height="20dp"/>
 
-            <TextView
-            android:textSize="10sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PHONE"
-            android:textColor="#C0C0C0" />
+            <ProgressBar
+                android:id="@+id/UserDetailsPB"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:textSize="20sp"
-                    android:id="@+id/phone_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:gravity="center"
-                    android:text="icon" />
-
-                <TextView
-                    android:id="@+id/prof_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:paddingLeft="10dp"
-                    android:text="+91 8281719809"
-                    android:textColor="#666"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="20dp"
-                android:background="#C0C0C0" />
-
-            <TextView
-                android:textSize="10sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="PLACE"
-                android:textColor="#C0C0C0" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:textSize="20sp"
-                    android:id="@+id/place_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:gravity="center"
-                    android:text="icon" />
-
-                <TextView
-                    android:id="@+id/prof_place"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
-                    android:paddingLeft="10dp"
-                    android:text="Cherukunnu"
-                    android:textColor="#666"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#C0C0C0" />
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
 </RelativeLayout>

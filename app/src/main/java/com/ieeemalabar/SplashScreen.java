@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +22,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ieeemalabar.models.Comment;
+import com.ieeemalabar.models.User;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +72,9 @@ public class SplashScreen extends Activity {
                             Log.d(TAG, "signIn:onComplete:" + task.isSuccessful());
                             //pd.hide();
                             if (task.isSuccessful()) {
-                                getHub();
+                                BackTask bt = new BackTask();
+                                bt.execute("http://ieee-malabar.rhcloud.com/ready.php");
+                                getUserDetails();
                             }else {
                                 Toast.makeText(SplashScreen.this, "No internet access!", Toast.LENGTH_SHORT).show();
                                 Handler handler = new Handler();
@@ -99,22 +109,29 @@ public class SplashScreen extends Activity {
         return isValid;
     }
 
-    public void getHub(){
-        FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("hubmember")
+    public void getUserDetails(){
+
+        final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference().child("users").child(uid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user information
-                        String hubmember = "";
-                        hubmember = dataSnapshot.getValue().toString();
-                        if(hubmember != "") {
-                            SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = settings.edit();
-                            editor.putString("hubmember", hubmember);
-                            editor.commit();
+                        User user = dataSnapshot.getValue(User.class);
 
-                            startActivity(new Intent(SplashScreen.this, ActivityMain.class));
-                        }
+                        String name = user.name;
+                        String position = user.position;
+                        String hubmember = user.hubmember;
+
+                        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("name", name);
+                        editor.putString("hubmember", hubmember);
+                        editor.putString("position", position);
+                        editor.commit();
+
+                        startActivity(new Intent(SplashScreen.this, ActivityMain.class));
+                        finish();
                     }
 
                     @Override
@@ -122,5 +139,33 @@ public class SplashScreen extends Activity {
 
                     }
                 });
+    }
+
+    private class BackTask extends AsyncTask<String, Integer, Void> {
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected Void doInBackground(String... params) {
+            URL url;
+            try {
+                url = new URL(params[0]);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                InputStream is = con.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String line;
+                String text = "";
+                while ((line = br.readLine()) != null) {
+                    text += line;
+                }
+
+                Toast.makeText(SplashScreen.this, text, Toast.LENGTH_SHORT).show();
+
+                br.close();
+
+            } catch (Exception e) {
+            }
+            return null;
+        }
     }
 }

@@ -19,7 +19,6 @@ public class SBEventsFragment extends PostListFragment {
         SharedPreferences settings = getActivity().getSharedPreferences("com.ieeemalabar", getActivity().MODE_PRIVATE);
         String college = settings.getString("college", "");
         // All my posts
-        return databaseReference.child("user-posts")
-                .child(college);
+        return databaseReference.child("user-posts").child(college);
     }
 }

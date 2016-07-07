@@ -64,17 +64,13 @@ public class Notifications extends AppCompatActivity {
 
         mRef = FirebaseDatabase.getInstance().getReference().child("notifications");
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.mRecycler);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-
         FirebaseRecyclerAdapter mAdapter = new FirebaseRecyclerAdapter<Notification, NotifViewHolder>(Notification.class, R.layout.item_notifications, NotifViewHolder.class, mRef) {
             @Override
             public void populateViewHolder(NotifViewHolder viewHolder, Notification notif, int position) {
                 viewHolder.setMessage(notif.getTitle(), notif.getMessage(), notif.getDate());
             }
         };
-        recycler.setAdapter(mAdapter);
+        myRecycler.setAdapter(mAdapter);
 
         LinearLayoutManager mManager;
         mManager = new LinearLayoutManager(this);

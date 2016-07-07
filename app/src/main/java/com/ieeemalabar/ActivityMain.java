@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.ieeemalabar.fragment.HubEventsFragment;
+import com.ieeemalabar.fragment.PostListFragment;
 import com.ieeemalabar.fragment.RecentEventsFragment;
 import com.ieeemalabar.fragment.SBEventsFragment;
 import com.ieeemalabar.fragment.SignIn;
@@ -61,6 +64,10 @@ public class ActivityMain extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //setRetainInstance(true);
         viewPager.setOffscreenPageLimit(4);
+        setAdapterfn();
+    }
+
+    public void setAdapterfn(){
         viewPager.setAdapter(new CustomAdapter(getSupportFragmentManager(), this));
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -68,7 +75,8 @@ public class ActivityMain extends AppCompatActivity {
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_event_light);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_college_dark);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_stars_dark);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_hub_dark);
+        tabLayout.getTabAt(3).setIcon(R.drawable.ic_stars_dark);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -77,12 +85,24 @@ public class ActivityMain extends AppCompatActivity {
                 if (tab.getPosition() == 0) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_event_light);
                     setTitle("All Events");
+                    findViewById(R.id.fab_new_post).setVisibility(View.GONE);
+                    //addOnClickSB();
+
                 } else if (tab.getPosition() == 1) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_light);
                     setTitle("Our SB Events");
+                    addOnClickSB();
+
                 } else if (tab.getPosition() == 2) {
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_hub_light);
+                    setTitle("Hub Events");
+                    addOnClickHUB();
+
+                } else if (tab.getPosition() == 3) {
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_light);
                     setTitle("Top Starred Events");
+                    findViewById(R.id.fab_new_post).setVisibility(View.GONE);
+                    //addOnClickSB();
                 }
             }
 
@@ -94,6 +114,8 @@ public class ActivityMain extends AppCompatActivity {
                 else if (tab.getPosition() == 1)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_dark);
                 else if (tab.getPosition() == 2)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_hub_dark);
+                else if (tab.getPosition() == 3)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_dark);
             }
 
@@ -105,29 +127,66 @@ public class ActivityMain extends AppCompatActivity {
                 else if (tab.getPosition() == 1)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_college_light);
                 else if (tab.getPosition() == 2)
+                    tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_hub_light);
+                else if (tab.getPosition() == 3)
                     tabLayout.getTabAt(tab.getPosition()).setIcon(R.drawable.ic_stars_light);
             }
         });
 
+        findViewById(R.id.fab_new_post).setVisibility(View.GONE);
+    }
+
+    public void addOnClickSB(){
         SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
         String position = settings.getString("position", "");
-        if (position.equals("Chairman") || position.equals("Vice Chairman")) {
-            //Button launches NewPostActivity
-            findViewById(R.id.fab_new_post).setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_post);
+        if (position.equals("Other") || position.equals("Non-execom Member")) {
+            fab.setVisibility(View.GONE);
+        } else {
+        //Button launches NewPostActivity
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
+                    //startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
+                    Intent intent = new Intent(ActivityMain.this, NewPostActivity.class);
+                    intent.putExtra("SBorH", "sbevent");
+                    intent.putExtra("condition", "new");
+                    intent.putExtra("post_key", "null");
+                    intent.putExtra("college", "null");
+                    startActivity(intent);
+                }
+            });
+        }
+    }
+
+    public void addOnClickHUB(){
+        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+        String hub = settings.getString("hubmember", "");
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_new_post);
+        if (hub.equals("true")) {
+            //Button launches NewPostActivity
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //startActivity(new Intent(ActivityMain.this, NewPostActivity.class));
+                    Intent intent = new Intent(ActivityMain.this, NewPostActivity.class);
+                    intent.putExtra("SBorH", "hubevent");
+                    intent.putExtra("condition", "new");
+                    intent.putExtra("post_key", "null");
+                    intent.putExtra("college", "null");
+                    startActivity(intent);
                 }
             });
         } else {
-            findViewById(R.id.fab_new_post).setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
         }
-
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
 
-        private String fragments[] = {"", "", ""};
+        private String fragments[] = {"", "", "", ""};
 
         public CustomAdapter(FragmentManager supportFragmentManager, Context applicationContext) {
             super(supportFragmentManager);
@@ -141,6 +200,8 @@ public class ActivityMain extends AppCompatActivity {
                 case 1:
                     return new SBEventsFragment();
                 case 2:
+                    return new HubEventsFragment();
+                case 3:
                     return new TopStarredFragment();
                 default:
                     return null;
@@ -194,10 +255,14 @@ public class ActivityMain extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Do you really want to log out?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
+                        .setNegativeButton("No", dialogClickListener)
+                        .setTitle("Logout")
+                        .show();
                 return true;
             case R.id.profile:
-                startActivity(new Intent(this, Profile.class));
+                Intent intent = new Intent(ActivityMain.this, Profile.class);
+                intent.putExtra("message", "me");
+                startActivity(intent);
                 return true;
             case R.id.notification:
                 startActivity(new Intent(this, Notifications.class));
@@ -246,5 +311,20 @@ public class ActivityMain extends AppCompatActivity {
                 close = false;
             }
         }, 2000);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        SharedPreferences settings = getSharedPreferences("com.ieeemalabar", MODE_PRIVATE);
+        String change = settings.getString("prof_change", "");
+
+        if(change.equals("yes")) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("prof_change", "no");
+            editor.commit();
+            setAdapterfn();
+        }
     }
 }
